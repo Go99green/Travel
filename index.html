@@ -285,6 +285,8 @@ footer .mono { letter-spacing: 0.1em; }
   <summary class="chead"><span class="tag ops-t">MAP</span> Theater overview <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div id="map"></div>
+    <div id="mapStatus">TILE FEED: <b>ACQUIRING…</b></div>
+    <div id="mapFallback"></div>
     <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily (DWS &amp; Chilling)</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais (Alpine Hikes)</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
   </div>
 </details>
@@ -682,49 +684,121 @@ async function tripForecast(){
 async function fx(){
   const fxRow = document.getElementById('fxRow');
   if(!fxRow) return;
+  const show = (eur, chf, stale) =>
+    fxRow.textContent = `$1 = \u20AC${eur.toFixed(3)} \u00B7 CHF ${chf.toFixed(3)}` + (stale ? ' (last known)' : '');
+
+  // cached value first so there is never a blank/offline row
   try{
-    const r=await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,CHF');const j=await r.json();
-    fxRow.textContent=`$1 = €${j.rates.EUR.toFixed(2)} · CHF ${j.rates.CHF.toFixed(2)}`;
-  }catch(e){fxRow.textContent='RATES OFFLINE';}
+    const c = JSON.parse(localStorage.getItem('travl_fx') || 'null');
+    if(c) show(c.eur, c.chf, true);
+  }catch(e){}
+
+  const providers = [
+    { url:'https://api.frankfurter.dev/v1/latest?base=USD&symbols=EUR,CHF',
+      parse: j => ({ eur:j.rates.EUR, chf:j.rates.CHF }) },
+    { url:'https://open.er-api.com/v6/latest/USD',
+      parse: j => ({ eur:j.rates.EUR, chf:j.rates.CHF }) }
+  ];
+  for(const p of providers){
+    try{
+      const r = await fetch(p.url);
+      if(!r.ok) continue;
+      const v = p.parse(await r.json());
+      if(!v || !isFinite(v.eur) || !isFinite(v.chf)) continue;
+      show(v.eur, v.chf, false);
+      localStorage.setItem('travl_fx', JSON.stringify({eur:v.eur, chf:v.chf, at:Date.now()}));
+      return;
+    }catch(e){ /* next provider */ }
+  }
+  if(!localStorage.getItem('travl_fx')) fxRow.textContent='RATES OFFLINE';
 }
 
-/* MAP */
-let mapObj = null;
+/* MAP — provider fallback chain + self-diagnosis */
+let mapObj = null, tileLayer = null, tileIdx = 0, tileErrors = 0, tilesOK = false;
+const TILE_PROVIDERS = [
+  { name:'CARTO DARK', url:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    opts:{ maxZoom:19, subdomains:'abcd', attribution:'&copy; OpenStreetMap &copy; CARTO' } },
+  { name:'CARTO RASTER', url:'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
+    opts:{ maxZoom:19, subdomains:'abcd', attribution:'&copy; OpenStreetMap &copy; CARTO' } },
+  { name:'OSM STANDARD', url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    opts:{ maxZoom:19, attribution:'&copy; OpenStreetMap' } }
+];
+
+const PINS = [
+  [32.7338,-117.1933,'#FF5E00','SAN','Depart Aug 17 17:15 · Land Aug 29 20:39'],
+  [38.1760,13.0910,'#FF5E00','PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30'],
+  [38.0175,12.5449,'#00E5FF','Trapani base','Via Spalti 33, 4th fl · Aug 18–22'],
+  [38.1740,12.7350,'#00E5FF','San Vito Lo Capo','DWS ocean rock climbing & beach chill'],
+  [38.1120,12.8000,'#00E5FF','Zingaro','DWS coves & sea cave swim'],
+  [38.0372,12.5865,'#00E5FF','Erice','Cable car + pastries'],
+  [37.9910,12.5030,'#00E5FF','Salt pans','Sunset watch'],
+  [47.4581,8.5555,'#FF5E00','ZRH Zurich','Land Aug 22 11:45 · Europcar 12:30'],
+  [46.2000,6.8690,'#00FF88','Champoussin base','Route de Champoussin 22 · Aug 22–29'],
+  [46.1500,7.0000,'#00FF88','Lac de Salanfe','~10 km · 600 m · 4–5 h'],
+  [46.3450,6.8360,'#00FF88','Lac de Taney','~5 km · 400 m · 2–3 h'],
+  [46.0770,6.9270,'#00FF88','Emosson Dam','2–5 h · dinosaur trackway'],
+  [46.2830,7.2140,'#00FF88','Derborence','Easy valley · 2–4 h'],
+  [46.0670,7.7780,'#00FF88','Täsch','Park + train to Zermatt (car-free)'],
+  [46.2381,6.1080,'#FF5E00','GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40']
+];
+
+function mapStatus(txt, warn){
+  const el=document.getElementById('mapStatus'); if(!el) return;
+  el.innerHTML='TILE FEED: <b>'+txt+'</b>';
+  el.classList.toggle('warn', !!warn);
+}
+function showMapFallback(){
+  const el=document.getElementById('mapFallback'); if(!el) return;
+  el.className='on';
+  el.innerHTML = '<div style="font-size:.8rem;color:var(--text-muted);margin-bottom:6px">Map tiles blocked on this device (ad-blocker or network filter). Every pin is still one tap away:</div>' +
+    PINS.map(p=>`<a href="https://www.google.com/maps/dir/?api=1&destination=${p[0]},${p[1]}" target="_blank" rel="noopener" style="color:${p[2]};border-color:${p[2]}">▸ ${p[3]}</a>`).join('');
+}
+
+function mountTiles(){
+  if(!mapObj) return;
+  if(tileLayer){ mapObj.removeLayer(tileLayer); }
+  const p = TILE_PROVIDERS[tileIdx];
+  tileErrors = 0; tilesOK = false;
+  mapStatus(p.name + ' · CONNECTING…');
+  tileLayer = L.tileLayer(p.url, p.opts).addTo(mapObj);
+  tileLayer.on('tileload', ()=>{ if(!tilesOK){ tilesOK=true; mapStatus(p.name + ' · ONLINE'); } });
+  tileLayer.on('tileerror', ()=>{
+    tileErrors++;
+    if(tileErrors >= 4 && !tilesOK){
+      if(tileIdx < TILE_PROVIDERS.length - 1){ tileIdx++; mountTiles(); }
+      else { mapStatus('UNAVAILABLE — USING DIRECT LINKS', true); showMapFallback(); }
+    }
+  });
+  // if nothing painted within 6s, escalate
+  setTimeout(()=>{
+    if(tilesOK) return;
+    if(tileIdx < TILE_PROVIDERS.length - 1){ tileIdx++; mountTiles(); }
+    else { mapStatus('UNAVAILABLE — USING DIRECT LINKS', true); showMapFallback(); }
+  }, 6000);
+}
+
 function buildMap(){
   const mapEl = document.getElementById('map');
-  if (!mapEl || typeof L === 'undefined' || mapObj) return;
+  if (!mapEl) return;
+  if (typeof L === 'undefined'){ mapStatus('LEAFLET BLOCKED', true); showMapFallback(); return; }
+  if (mapObj) { mapObj.invalidateSize(); return; }
 
   mapObj = L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
+  mountTiles();
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-  }).addTo(mapObj);
+  PINS.forEach(([lat,lon,color,title,body])=>{
+    L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1})
+      .addTo(mapObj)
+      .bindPopup(`<b>${title}</b><br>${body}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}" target="_blank" rel="noopener" style="color:${color};text-decoration:none;font-weight:700">▸ NAVIGATE</a>`);
+  });
 
-  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1})
-    .addTo(mapObj)
-    .bindPopup(`<b>${title}</b><br>${body}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}" target="_blank" rel="noopener" style="color:${color};text-decoration:none;font-weight:700">▸ NAVIGATE</a>`);
-  const SEA = '#00E5FF';
-  const ALP = '#00FF88';
-  const AMB = '#FF5E00';
-
-  mk(32.7338,-117.1933,AMB,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
-  mk(38.1760,13.0910,AMB,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
-  mk(38.0175,12.5449,SEA,'Trapani base','Via Spalti 33, 4th fl · Aug 18–22');
-  mk(38.1740,12.7350,SEA,'San Vito Lo Capo','DWS ocean rock climbing & beach chill');
-  mk(38.1120,12.8000,SEA,'Zingaro','DWS coves & sea cave swim');
-  mk(38.0372,12.5865,SEA,'Erice','Cable car + pastries');
-  mk(37.9910,12.5030,SEA,'Salt pans','Sunset watch');
-  mk(47.4581,8.5555,AMB,'ZRH Zurich','Land Aug 22 11:45 · Europcar 12:30');
-  mk(46.2000,6.8690,ALP,'Champoussin base','Route de Champoussin 22 · Aug 22–29');
-  mk(46.1500,7.0000,ALP,'Lac de Salanfe','~10 km · 600 m · 4–5 h');
-  mk(46.3450,6.8360,ALP,'Lac de Taney','~5 km · 400 m · 2–3 h');
-  mk(46.0770,6.9270,ALP,'Emosson Dam','2–5 h · dinosaur trackway');
-  mk(46.2830,7.2140,ALP,'Derborence','Easy valley · 2–4 h');
-  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt (car-free)');
-  mk(46.2381,6.1080,AMB,'GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40');
-
-  setTimeout(() => { if(mapObj) mapObj.invalidateSize(); }, 200);
+  // resize hardening: after paint, on window resize, and whenever the section is toggled
+  setTimeout(()=>mapObj && mapObj.invalidateSize(), 200);
+  setTimeout(()=>mapObj && mapObj.invalidateSize(), 1200);
+  window.addEventListener('resize', ()=>mapObj && mapObj.invalidateSize());
+  const sec = document.getElementById('mapsec');
+  const det = sec && sec.querySelector('details');
+  if(det) det.addEventListener('toggle', ()=>{ if(det.open) setTimeout(()=>mapObj && mapObj.invalidateSize(), 60); });
 }
 
 /* ICS */
