@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14170F">
+<title>travl · SICILIA→VALAIS · OPS AUG 2026</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#14170F; --panel:#1B2015; --panel2:#222919; --line:#39402C; --line2:#4A5238;
+  --bone:#E9E4D4; --muted:#9BA285; --dim:#6E755C;
+  --olive:#7C8B5D; --sand:#C9A86B; --sand-deep:#A8863F; --blaze:#E8622C;
+  --sea:#4FA9A0; --sea-deep:#2E7A73; --alp:#8FB0C4; --alp-deep:#5D82A0; --pine:#5F7350;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  font-family:'Barlow',system-ui,sans-serif;background:var(--bg);color:var(--bone);
+  line-height:1.5;font-size:16px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(233,228,212,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(233,228,212,.025) 40px);
+}
+.mono{font-family:'JetBrains Mono',monospace}
+h1,h2,h3,.disp,summary.chead{font-family:'Big Shoulders Display','Barlow',sans-serif;text-transform:uppercase;letter-spacing:.04em}
+
+/* GATE */
+#gate{position:fixed;inset:0;z-index:90;background:linear-gradient(150deg,#0E1310,#1B2015 55%,#20170F);display:flex;align-items:center;justify-content:center;padding:24px}
+.stub{background:var(--panel2);border:1px solid var(--line2);width:100%;max-width:410px;border-radius:14px;padding:34px 30px 28px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.stub::before,.stub::after{content:"";position:absolute;width:26px;height:26px;border-radius:50%;background:#14170F;border:1px solid var(--line2);top:56%}
+.stub::before{left:-13px}.stub::after{right:-13px}
+.stub .route{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+.stub .code{font-family:'Big Shoulders Display';font-weight:800;font-size:2.1rem;color:var(--bone)}
+.stub .arrow{color:var(--blaze);font-size:1.2rem}
+.stub .meta{font-family:'JetBrains Mono';font-size:.66rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:22px}
+.stub .dashed{border-top:2px dashed var(--line2);margin:20px -30px}
+.stub label{display:block;font-family:'JetBrains Mono';font-size:.66rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin:12px 0 8px}
+.stub input{width:100%;font-family:'JetBrains Mono';font-size:1.05rem;padding:12px 14px;border:1px solid var(--line2);border-radius:8px;background:#101408;color:var(--bone);letter-spacing:.1em}
+.stub input:focus{outline:2px solid var(--sand);border-color:var(--sand)}
+.stub button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:8px;background:var(--sand);color:#14170F;font-family:'Big Shoulders Display';font-size:1.15rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.stub button:hover{background:var(--sand-deep)}
+.stub button:focus-visible{outline:3px solid var(--blaze);outline-offset:2px}
+.stub .err{color:var(--blaze);font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+#app{display:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:40;background:rgba(20,23,15,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:10px 14px}
+nav a{flex:0 0 auto;font-family:'JetBrains Mono';font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:6px;border:1px solid transparent}
+nav a:hover{border-color:var(--line2);color:var(--bone)}
+
+/* HERO */
+header.hero{padding:44px 20px 36px;text-align:center;border-bottom:1px solid var(--line)}
+.hero .eyebrow{font-family:'JetBrains Mono';font-size:.66rem;text-transform:uppercase;letter-spacing:.3em;color:var(--sand)}
+.hero h1{font-size:clamp(2.6rem,9vw,4.2rem);font-weight:800;line-height:.95;margin:10px 0 6px}
+.hero h1 .sic{color:var(--sea)}.hero h1 .swi{color:var(--alp)}.hero h1 .x{color:var(--blaze)}
+.hero .dates{font-family:'JetBrains Mono';font-size:.8rem;color:var(--muted);letter-spacing:.12em}
+.cd-wrap{max-width:620px;margin:26px auto 0;padding:0 12px}
+.cd-label{font-family:'JetBrains Mono';font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;color:var(--muted);margin-bottom:10px}
+.cd{display:flex;gap:8px;justify-content:center}
+.cd .cell{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 0;flex:1;max-width:104px}
+.cd .num{font-family:'JetBrains Mono';font-weight:700;font-size:clamp(1.4rem,6vw,2.1rem);line-height:1;color:var(--sand);font-variant-numeric:tabular-nums}
+.cd .unit{font-family:'JetBrains Mono';font-size:.58rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);margin-top:6px}
+#cdDone{display:none;font-family:'Big Shoulders Display';font-size:1.5rem;color:var(--olive);font-weight:700}
+.prog{max-width:620px;margin:22px auto 0;padding:0 12px}
+.prog .bar{height:7px;border-radius:99px;background:var(--line);overflow:hidden}
+.prog .fill{height:100%;width:0;background:linear-gradient(90deg,var(--sea),var(--blaze) 50%,var(--alp));transition:width .8s}
+.prog .lbl{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-top:6px}
+.live{max-width:760px;margin:26px auto 0;padding:0 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;text-align:center}
+.chip .place{font-family:'JetBrains Mono';font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim)}
+.chip .clock{font-family:'JetBrains Mono';font-weight:700;font-size:1.1rem;font-variant-numeric:tabular-nums;margin-top:2px;color:var(--bone)}
+.chip .wx{font-size:.8rem;margin-top:3px;color:var(--muted);min-height:1.2em}
+.chip .wx .hi{color:var(--sand);font-weight:600}
+.chip .sun{font-family:'JetBrains Mono';font-size:.62rem;color:var(--dim);margin-top:2px}
+@media(max-width:560px){.live{grid-template-columns:1fr}.chip{display:grid;grid-template-columns:auto auto 1fr;gap:2px 12px;text-align:left;align-items:baseline}.chip .sun{grid-column:3;text-align:right}}
+
+main{max-width:780px;margin:0 auto;padding:8px 16px 90px}
+
+/* TODAY */
+#todayCard{margin-top:24px;background:linear-gradient(140deg,var(--panel2),var(--panel));border:1px solid var(--sand-deep);border-radius:var(--r);padding:18px}
+#todayCard .tlabel{font-family:'JetBrains Mono';font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--blaze)}
+#todayCard h2{font-size:1.6rem;margin:4px 0 8px;color:var(--sand)}
+#todayCard .row{display:flex;gap:14px;padding:7px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+#todayCard .row:last-child{border-bottom:0}
+#todayCard .row .t{font-family:'JetBrains Mono';font-size:.82rem;font-weight:700;color:var(--bone);white-space:nowrap;min-width:74px}
+#todayCard .row .d{font-size:.92rem;color:var(--muted)}
+#todayCard .row.hot .t,#todayCard .row.hot .d{color:var(--sand)}
+
+/* SECTIONS */
+.chapter{margin-top:22px}
+details.acc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+details.acc+details.acc{margin-top:12px}
+summary.chead{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 16px;font-size:1.3rem;font-weight:700;user-select:none;color:var(--bone)}
+summary.chead::-webkit-details-marker{display:none}
+summary.chead .tag{font-family:'JetBrains Mono';font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:4px;color:#14170F}
+.sic-t{background:var(--sea)}.swi-t{background:var(--alp)}.swap-t{background:var(--blaze)}.ops-t{background:var(--sand)}
+summary.chead .chev{margin-left:auto;transition:transform .25s;color:var(--dim);font-size:.8rem}
+details[open]>summary .chev{transform:rotate(180deg)}
+summary.chead .now-pill{font-family:'JetBrains Mono';font-size:.56rem;background:var(--olive);color:#14170F;padding:2px 8px;border-radius:4px;letter-spacing:.1em}
+.acc-body{padding:4px 16px 16px;border-top:1px dashed var(--line)}
+.leg{display:flex;gap:13px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+.leg:last-of-type{border-bottom:0}
+.leg .t{font-family:'JetBrains Mono';font-size:.8rem;white-space:nowrap;font-weight:700;color:var(--bone)}
+.leg .d{font-size:.9rem;color:var(--muted)}
+.leg .d b{color:var(--bone);font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.88rem;margin:10px 0}
+.kv dt{font-family:'JetBrains Mono';color:var(--dim);font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;padding-top:3px}
+.kv dd{color:var(--muted)}.kv dd b{color:var(--bone)}
+.conf{display:inline-block;font-family:'JetBrains Mono';font-weight:700;font-size:.78rem;background:var(--sand);color:#14170F;border-radius:4px;padding:1px 7px;letter-spacing:.05em}
+.note{margin-top:11px;padding:10px 13px;border-radius:8px;font-size:.85rem;background:rgba(143,176,196,.08);border:1px solid rgba(143,176,196,.25);color:var(--muted)}
+.note.warn{background:rgba(232,98,44,.08);border-color:rgba(232,98,44,.4)}
+.note b{color:var(--bone)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btns a,.btns button{font-family:'JetBrains Mono';font-size:.68rem;letter-spacing:.06em;text-decoration:none;color:var(--sand);border:1px solid var(--sand-deep);background:transparent;border-radius:6px;padding:6px 11px;cursor:pointer}
+.btns a:hover,.btns button:hover{background:var(--sand);color:#14170F}
+.btns.cool a,.btns.cool button{color:var(--alp);border-color:var(--alp-deep)}
+.btns.cool a:hover,.btns.cool button:hover{background:var(--alp);color:#14170F}
+.fstat{font-family:'JetBrains Mono';font-size:.68rem;letter-spacing:.05em;padding:6px 11px;border-radius:6px;border:1px dashed var(--line2);color:var(--muted);cursor:pointer}
+.fstat.ok{border-color:var(--olive);color:var(--olive)}
+.fstat.warn{border-color:var(--blaze);color:var(--blaze)}
+
+/* MAP */
+#map{height:420px;border-radius:var(--r);border:1px solid var(--line2);margin-top:4px;filter:saturate(.85) contrast(1.02)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel2);color:var(--bone);border:1px solid var(--line2)}
+.leaflet-popup-content{font-family:'Barlow';font-size:.85rem}
+.leaflet-popup-content b{font-family:'Big Shoulders Display';font-size:1rem;letter-spacing:.04em;text-transform:uppercase}
+.mapkey{display:flex;gap:14px;flex-wrap:wrap;margin:10px 2px 0;font-family:'JetBrains Mono';font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.mapkey i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+
+/* CHECK LISTS */
+.check{list-style:none;display:flex;flex-direction:column;gap:9px;padding:12px 16px 16px}
+.check li{display:flex;gap:11px;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+.check .box{flex:0 0 auto;width:18px;height:18px;border-radius:4px;border:2px solid var(--sand-deep);margin-top:2px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:transparent;font-size:.7rem;color:#14170F;user-select:none}
+.check .box[aria-checked="true"]{background:var(--olive);border-color:var(--olive)}
+.check .box:focus-visible{outline:3px solid var(--blaze);outline-offset:2px}
+.check li s{color:var(--dim)}
+.subhead{font-family:'JetBrains Mono';font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sand);padding:12px 16px 0}
+footer{text-align:center;padding:30px 20px 44px;color:var(--dim);font-size:.75rem;border-top:1px solid var(--line);margin-top:56px}
+</style>
+</head>
+<body>
+
+<div id="gate" role="dialog" aria-label="Enter passcode">
+  <form class="stub" id="gateForm">
+    <div class="route"><span class="code">SAN</span><span class="arrow">▸</span><span class="code" style="color:var(--sea)">PMO</span><span class="arrow">▸</span><span class="code" style="color:var(--alp)">GVA</span></div>
+    <div class="meta">OP WINDOW 17–29 AUG 2026 · HOLT + DOECKEL</div>
+    <div class="dashed" aria-hidden="true"></div>
+    <label for="pw">Access code</label>
+    <input id="pw" type="password" autocomplete="off" placeholder="•••••••••" aria-describedby="gateErr">
+    <button type="submit">Authenticate</button>
+    <div class="err" id="gateErr" aria-live="polite"></div>
+  </form>
+</div>
+
+<div id="app">
+<nav>
+  <a href="#today">Today</a><a href="#out">Outbound</a><a href="#sicily">Sicily</a><a href="#swap">Swap</a><a href="#swiss">Valais</a><a href="#home">Return</a><a href="#mapsec">Map</a><a href="#docs">Docs</a><a href="#todo">Lists</a>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">travl.holtanalytics.org</div>
+  <h1><span class="sic">Sicilia</span><span class="x">▸</span><span class="swi">Valais</span></h1>
+  <div class="dates">17—29 AUG 2026 · 12 NIGHTS · 2 COUNTRIES · 2 PAX</div>
+  <div class="cd-wrap">
+    <div class="cd-label" id="cdLabel">T-MINUS TO WHEELS UP</div>
+    <div class="cd" id="cd">
+      <div class="cell"><div class="num" id="cdD">--</div><div class="unit">days</div></div>
+      <div class="cell"><div class="num" id="cdH">--</div><div class="unit">hrs</div></div>
+      <div class="cell"><div class="num" id="cdM">--</div><div class="unit">min</div></div>
+      <div class="cell"><div class="num" id="cdS">--</div><div class="unit">sec</div></div>
+    </div>
+    <div id="cdDone">Mission complete. Welcome home.</div>
+  </div>
+  <div class="prog">
+    <div class="bar"><div class="fill" id="progFill"></div></div>
+    <div class="lbl"><span>SAN</span><span>Sicily</span><span>Swap</span><span>Valais</span><span>Home</span></div>
+  </div>
+  <div class="live">
+    <div class="chip"><div class="place">San Diego</div><div class="clock" id="clkSD">--:--</div><div class="wx" id="wxSD">…</div><div class="sun" id="sunSD"></div></div>
+    <div class="chip"><div class="place">Trapani</div><div class="clock" id="clkTP">--:--</div><div class="wx" id="wxTP">…</div><div class="sun" id="sunTP"></div></div>
+    <div class="chip"><div class="place">Champoussin</div><div class="clock" id="clkCH">--:--</div><div class="wx" id="wxCH">…</div><div class="sun" id="sunCH"></div></div>
+  </div>
+</header>
+
+<main>
+
+<section id="today"><div id="todayCard" hidden>
+  <div class="tlabel">CURRENT OP · LIVE</div>
+  <h2 id="todayTitle"></h2>
+  <div id="todayRows"></div>
+</div></section>
+
+<section class="chapter" id="out">
+<details class="acc" open data-phase="0">
+  <summary class="chead"><span class="tag sic-t">AUG 17–18</span> Insertion <span class="now-pill" hidden>NOW</span><span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <div class="leg"><span class="t">17:15</span><span class="d"><b>UA 8932</b> SAN ▸ MUC · Lufthansa A350 · 11h10 · seats 29C (K) / 29D (W)</span></div>
+    <div class="leg"><span class="t">13:25 +1</span><span class="d">Land Munich · connection 1h55</span></div>
+    <div class="leg"><span class="t">15:20</span><span class="d"><b>LH 1916</b> MUC ▸ PMO · A321neo · 2h · seats unassigned</span></div>
+    <div class="leg"><span class="t">17:20</span><span class="d">Land Palermo</span></div>
+    <div class="leg"><span class="t">18:30</span><span class="d"><b>Hertz pickup</b> PMO · <span class="conf">L662E040086</span> · Jeep Avenger class · $312.42</span></div>
+    <div class="leg"><span class="t">~19:30</span><span class="d">Arrive Trapani base</span></div>
+    <dl class="kv"><dt>United ref</dt><dd><span class="conf">AR526H</span> K · <span class="conf">ASGTLJ</span> W</dd></dl>
+    <p class="note warn"><b>Counter kit:</b> physical Amex (Keegan) · US license · <b>AAA IDP — legally required in Italy.</b></p>
+    <div class="btns">
+      <a href="https://www.flightaware.com/live/flight/UAL8932" target="_blank" rel="noopener">UA8932 STATUS</a>
+      <a href="https://www.flightaware.com/live/flight/DLH1916" target="_blank" rel="noopener">LH1916 STATUS</a>
+      <button data-ics="ua8932">+ CAL UA8932</button>
+      <span class="fstat" data-f="UA8932" data-d="2026-08-17" title="tap to refresh">UA8932 · standby</span>
+      <button data-ics="lh1916">+ CAL LH1916</button>
+      <span class="fstat" data-f="LH1916" data-d="2026-08-18" title="tap to refresh">LH1916 · standby</span>
+      <button data-ics="hertz1">+ CAL HERTZ</button>
+    </div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="sicily">
+<details class="acc" data-phase="1">
+  <summary class="chead"><span class="tag sic-t">AUG 18–22</span> Sector 1 · Trapani <span class="now-pill" hidden>NOW</span><span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <dl class="kv">
+      <dt>Base</dt><dd><b>Kindred swap · John Francis's place</b> · 4 nights</dd>
+      <dt>Grid</dt><dd>Via Spalti 33, 4th floor · 91100 Trapani</dd>
+      <dt>Window</dt><dd>In Tue 18 · 16:00 → Out Sat 22 · 11:00</dd>
+      <dt>Comms</dt><dd>Kindred Concierge + John Francis (in-app)</dd>
+    </dl>
+    <div class="leg"><span class="t">40 min</span><span class="d"><b>San Vito Lo Capo</b> — sport routes over turquoise water; DWS sectors on the headland</span></div>
+    <div class="leg"><span class="t">50 min</span><span class="d"><b>Zingaro reserve</b> — deep-water solo + swim coves</span></div>
+    <div class="leg"><span class="t">10 min</span><span class="d"><b>Erice</b> — cable car, medieval streets, Maria Grammatico pastries</span></div>
+    <div class="leg"><span class="t">15 min</span><span class="d"><b>Salt pans</b> — sunset watch, windmills</span></div>
+    <div class="btns"><button data-ics="kindred">+ CAL CHECK-IN</button></div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="swap">
+<details class="acc" data-phase="2">
+  <summary class="chead"><span class="tag swap-t">SAT AUG 22</span> Swap day <span class="now-pill" hidden>NOW</span><span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <div class="leg"><span class="t">06:15</span><span class="d">Depart base — packed the night prior</span></div>
+    <div class="leg"><span class="t">07:30</span><span class="d">Hertz return PMO (desk opens 07:30)</span></div>
+    <div class="leg"><span class="t">09:45</span><span class="d"><b>LX 1741</b> PMO ▸ ZRH · <span class="conf">ACWOBL</span> K · <span class="conf">YJPCZI</span> W · Air Baltic A220</span></div>
+    <div class="leg"><span class="t">11:45</span><span class="d">Land Zurich</span></div>
+    <div class="leg"><span class="t">12:30</span><span class="d"><b>Europcar pickup</b> ZRH · <span class="conf">746398455</span> · VW Polo auto</span></div>
+    <div class="leg"><span class="t">~15:30</span><span class="d">Arrive Champoussin — reception closes 18:00</span></div>
+    <p class="note warn"><b>Counter:</b> CHF 125.03 due (one-way + extra driver — must be present with license). Vignette should be included; decline winter add-ons.</p>
+    <p class="note warn"><b>Baggage:</b> LX fare = Economy Light, 8 kg carry-on ONLY. Add checked bags to BOTH refs before the airport or the rope stays in Sicily.</p>
+    <div class="btns cool">
+      <a href="https://www.flightaware.com/live/flight/SWR1741" target="_blank" rel="noopener">LX1741 STATUS</a>
+      <button data-ics="lx1741">+ CAL LX1741</button>
+      <span class="fstat" data-f="LX1741" data-d="2026-08-22" title="tap to refresh">LX1741 · standby</span>
+      <button data-ics="europcar">+ CAL EUROPCAR</button>
+    </div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="swiss">
+<details class="acc" data-phase="3">
+  <summary class="chead"><span class="tag swi-t">AUG 22–29</span> Sector 2 · Champoussin <span class="now-pill" hidden>NOW</span><span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <dl class="kv">
+      <dt>Base</dt><dd><b>Portes du Soleil</b> · 7 nights · 1BR full kitchen</dd>
+      <dt>Grid</dt><dd>Route de Champoussin 22, CH-1873</dd>
+      <dt>Ref</dt><dd><span class="conf">A1900002356418001</span> (name: William Doeckel)</dd>
+      <dt>Comms</dt><dd class="mono">+41 24 477 26 82</dd>
+      <dt>Reception</dt><dd>14:00–18:00 daily · Sun 08:00–11:30</dd>
+      <dt>Window</dt><dd>In Sat 22 · 16:00 → Out Sat 29 · 10:00</dd>
+    </dl>
+    <p class="note warn"><b>Pay at check-in:</b> 25 CHF/pp utility + 3 CHF/pp/night tax + 200 CHF deposit (card imprint) — ~292 CHF total for two. Booking may not appear in their system until ~Aug 8. Normal.</p>
+    <div class="leg"><span class="t">45 min</span><span class="d"><b>Lac de Salanfe</b> — alpine lake under the Dents du Midi</span></div>
+    <div class="leg"><span class="t">40 min</span><span class="d"><b>Lac de Taney</b> — trailhead at Le Flon</span></div>
+    <div class="leg"><span class="t">60 min</span><span class="d"><b>Emosson Dam</b> — reservoir traverse + dinosaur tracks</span></div>
+    <div class="leg"><span class="t">60 min</span><span class="d"><b>Derborence</b> — landslide valley, zero crowds</span></div>
+    <div class="leg"><span class="t">00 min</span><span class="d"><b>Pointe de l'Au / Croix de l'Aiguille</b> — from the door; get the Multi-Pass</span></div>
+    <div class="leg"><span class="t">Big day</span><span class="d"><b>Zermatt</b> — drive Täsch 1h45, train up, Matterhorn</span></div>
+    <div class="btns cool"><button data-ics="resort">+ CAL CHECK-IN</button></div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="home">
+<details class="acc" data-phase="4">
+  <summary class="chead"><span class="tag swi-t">SAT AUG 29</span> Extraction <span class="now-pill" hidden>NOW</span><span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <div class="leg"><span class="t">08:00</span><span class="d">Roll out of Champoussin</span></div>
+    <div class="leg"><span class="t">10:00</span><span class="d">Europcar drop — Geneva Airport</span></div>
+    <div class="leg"><span class="t">12:40</span><span class="d"><b>UA 8391</b> GVA ▸ YUL · Air Canada 777 · 8h</span></div>
+    <div class="leg"><span class="t">14:40</span><span class="d">Land Montreal — US preclearance · connection 3h05</span></div>
+    <div class="leg"><span class="t">17:45</span><span class="d"><b>UA 8607</b> YUL ▸ SAN · A220</span></div>
+    <div class="leg"><span class="t">20:39</span><span class="d">Touchdown San Diego</span></div>
+    <dl class="kv"><dt>Refs</dt><dd><span class="conf">AR526H</span> K · <span class="conf">ASGTLJ</span> W · AC <span class="conf">ACS5LZ</span></dd></dl>
+    <div class="btns cool">
+      <a href="https://www.flightaware.com/live/flight/UAL8391" target="_blank" rel="noopener">UA8391 STATUS</a>
+      <a href="https://www.flightaware.com/live/flight/UAL8607" target="_blank" rel="noopener">UA8607 STATUS</a>
+      <button data-ics="ua8391">+ CAL UA8391</button>
+      <span class="fstat" data-f="UA8391" data-d="2026-08-29" title="tap to refresh">UA8391 · standby</span>
+      <button data-ics="ua8607">+ CAL UA8607</button>
+      <span class="fstat" data-f="UA8607" data-d="2026-08-29" title="tap to refresh">UA8607 · standby</span>
+    </div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="mapsec">
+<details class="acc" open>
+  <summary class="chead"><span class="tag ops-t">MAP</span> Theater overview <span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <div id="map"></div>
+    <div class="mapkey"><span><i style="background:var(--sea)"></i>Sicily</span><span><i style="background:var(--alp)"></i>Valais</span><span><i style="background:var(--blaze)"></i>Transit</span></div>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="docs">
+<details class="acc" open>
+  <summary class="chead"><span class="tag ops-t">DOCS</span> Quick access <span class="chev">▼</span></summary>
+  <div class="acc-body">
+    <div class="btns">
+      <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=AR526H&LastName=HOLT&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (K)</a>
+      <a href="https://www.swiss.com" target="_blank" rel="noopener">SWISS MANAGE</a>
+      <a href="https://www.hertz.com/us/en/reservation" target="_blank" rel="noopener">HERTZ RES</a>
+      <a href="https://cars.booking.com" target="_blank" rel="noopener">EUROPCAR BOOKING</a>
+      <button data-ics="ALL">⬇ FULL TRIP .ICS</button>
+    </div>
+    <dl class="kv" style="margin-top:14px">
+      <dt>Resort</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--sand)">+41 24 477 26 82</a></dd>
+      <dt>EU emergency</dt><dd class="mono">112 (IT + CH, all services)</dd>
+      <dt>US Embassy IT</dt><dd class="mono">+39 06 46741</dd>
+      <dt>US Embassy CH</dt><dd class="mono">+41 31 357 70 11</dd>
+      <dt>FX</dt><dd class="mono" id="fxRow">loading rates…</dd>
+    </dl>
+  </div>
+</details>
+</section>
+
+<section class="chapter" id="todo">
+<details class="acc" open>
+  <summary class="chead"><span class="tag swap-t">LISTS</span> Pre-flight + packing <span class="chev">▼</span></summary>
+  <div class="subhead">// PRE-FLIGHT</div>
+  <ul class="check" data-store="travl_c">
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>AAA run: International Driving Permit ($20 + 2 photos) — required for Italy</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Give Europcar arrival flight LX 1741 (lands ZRH 11:45)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Add checked bags to BOTH LX refs (ACWOBL + YJPCZI) — 8 kg carry-on limit</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Check-ins: United Aug 16 ~17:15 · Swiss Aug 21 · United return Aug 28</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>CHF ~292 cash for resort fees, or card it</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Physical Amex + both licenses; extra driver present at ZRH counter</span></li>
+  </ul>
+  <div class="subhead">// CLIMB KIT</div>
+  <ul class="check" data-store="travl_pk_c">
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Rope (70m) + draws ×12 + harnesses + belay device</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Climbing shoes + chalk bags + tape</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>DWS: quick-dry shorts, water shoes, dry bag for phone</span></li>
+  </ul>
+  <div class="subhead">// HIKE KIT</div>
+  <ul class="check" data-store="travl_hk_c">
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Boots + trail runners + poles</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Layers: shell, fleece, sun hoody — alpine mornings are cold in August</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>2L water capacity + snacks + small first aid</span></li>
+  </ul>
+  <div class="subhead">// DOCS</div>
+  <ul class="check" data-store="travl_dk_c">
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Passports (6+ months validity) + IDP + licenses</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Amex physical card + backup card + some EUR cash</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Printed resort confirmation (they ask for it at check-in)</span></li>
+  </ul>
+</details>
+</section>
+
+</main>
+<footer>
+  <div class="mono">SICILIA ▸ VALAIS · A HOLT PRODUCTION</div>
+  <div class="mono" style="font-size:.65rem;margin-top:4px">wx open-meteo · fx frankfurter · installable pwa · lists save on-device</div>
+</footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* GATE */
+const HASH='d5d5e69ef6f8f3fbb87ffe5ae5df2af6d079d915bd8f7f10b2414a8f554afac0';
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function unlock(){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';boot()}
+if(sessionStorage.getItem('travl_ok')==='1')unlock();
+document.getElementById('gateForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const v=document.getElementById('pw').value.trim().toLowerCase();
+  if(await sha(v)===HASH){sessionStorage.setItem('travl_ok','1');unlock();}
+  else{document.getElementById('gateErr').textContent='Negative — check with Keegan.';document.getElementById('pw').select();}
+});
+
+/* MILESTONES */
+const M=[
+ {t:Date.parse('2026-08-18T00:15:00Z'),label:'T-MINUS TO WHEELS UP',phase:0},
+ {t:Date.parse('2026-08-18T15:20:00Z'),label:'T-MINUS TO PALERMO TOUCHDOWN',phase:1},
+ {t:Date.parse('2026-08-22T07:45:00Z'),label:'T-MINUS TO SWAP DAY · LX1741',phase:2},
+ {t:Date.parse('2026-08-22T14:00:00Z'),label:'T-MINUS TO CHAMPOUSSIN CHECK-IN',phase:3},
+ {t:Date.parse('2026-08-29T10:40:00Z'),label:'T-MINUS TO EXTRACTION · GVA',phase:4},
+ {t:Date.parse('2026-08-30T03:39:00Z'),label:'T-MINUS TO SAN TOUCHDOWN',phase:4}
+];
+const TRIP_START=M[0].t, TRIP_END=M[5].t;
+
+/* TODAY AGENDA (dates in local trip tz) */
+const AGENDA={
+ '2026-08-17':{tz:'America/Los_Angeles',title:'Insertion · SAN',rows:[['17:15','UA 8932 departs SAN — be at airport by 14:15']]},
+ '2026-08-18':{tz:'Europe/Rome',title:'Arrival · Sicily',rows:[['13:25','Land Munich (connection 1h55)'],['15:20','LH 1916 departs MUC'],['17:20','Land Palermo'],['18:30','Hertz pickup'],['~19:30','Arrive Trapani base']]},
+ '2026-08-19':{tz:'Europe/Rome',title:'Sicily · Day 1',rows:[['—','San Vito Lo Capo recon: routes + DWS sectors'],['PM','Town dinner — couscous']]},
+ '2026-08-20':{tz:'Europe/Rome',title:'Sicily · Day 2',rows:[['—','Zingaro DWS + swim coves'],['Sunset','Salt pans']]},
+ '2026-08-21':{tz:'Europe/Rome',title:'Sicily · Day 3',rows:[['—','Climb AM · Erice cable car PM'],['EVE','Pack + Swiss online check-in opens']]},
+ '2026-08-22':{tz:'Europe/Zurich',title:'SWAP DAY',rows:[['06:15','Depart base'],['07:30','Hertz return PMO'],['09:45','LX 1741 ▸ ZRH'],['11:45','Land Zurich'],['12:30','Europcar pickup'],['~15:30','Champoussin — reception closes 18:00']]},
+ '2026-08-23':{tz:'Europe/Zurich',title:'Valais · Day 1',rows:[['—','Door-out: Pointe de l\'Au · grab Multi-Pass']]},
+ '2026-08-24':{tz:'Europe/Zurich',title:'Valais · Day 2',rows:[['—','Lac de Salanfe (45 min drive)']]},
+ '2026-08-25':{tz:'Europe/Zurich',title:'Valais · Day 3',rows:[['—','Lac de Taney via Le Flon (40 min)']]},
+ '2026-08-26':{tz:'Europe/Zurich',title:'Valais · Day 4',rows:[['—','Emosson Dam + dinosaur tracks (1 hr)']]},
+ '2026-08-27':{tz:'Europe/Zurich',title:'Valais · Day 5',rows:[['—','Big day option: Zermatt via Täsch']]},
+ '2026-08-28':{tz:'Europe/Zurich',title:'Valais · Day 6',rows:[['—','Derborence or rest day'],['12:40','United return check-in opens'],['EVE','Pack + fuel the Polo']]},
+ '2026-08-29':{tz:'Europe/Zurich',title:'EXTRACTION',rows:[['08:00','Roll out of Champoussin'],['10:00','Europcar drop GVA'],['12:40','UA 8391 ▸ YUL'],['17:45','UA 8607 ▸ SAN'],['20:39','Touchdown San Diego']]}
+};
+function renderToday(){
+  const now=Date.now(); let tz='America/Los_Angeles';
+  if(now>=M[1].t&&now<M[2].t)tz='Europe/Rome'; else if(now>=M[2].t)tz='Europe/Zurich';
+  const key=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const a=AGENDA[key]; const card=document.getElementById('todayCard');
+  if(!a){card.hidden=true;return;}
+  card.hidden=false;
+  document.getElementById('todayTitle').textContent=a.title;
+  document.getElementById('todayRows').innerHTML=a.rows.map(r=>`<div class="row"><span class="t">${r[0]}</span><span class="d">${r[1]}</span></div>`).join('');
+}
+
+function tick(){
+  const now=Date.now();
+  const next=M.find(m=>m.t>now);
+  const lbl=document.getElementById('cdLabel'), cd=document.getElementById('cd');
+  if(!next){lbl.style.display='none';cd.style.display='none';document.getElementById('cdDone').style.display='block';}
+  else{lbl.textContent=next.label;
+    let s=Math.floor((next.t-now)/1000);
+    const d=Math.floor(s/86400);s-=d*86400;const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);s-=m*60;
+    cdD.textContent=d;cdH.textContent=String(h).padStart(2,'0');cdM.textContent=String(m).padStart(2,'0');cdS.textContent=String(s).padStart(2,'0');
+  }
+  const p=Math.max(0,Math.min(1,(now-TRIP_START)/(TRIP_END-TRIP_START)));
+  document.getElementById('progFill').style.width=(p*100)+'%';
+  let phase=-1;
+  if(now>=TRIP_START)phase=M.filter(m=>m.t<=now).slice(-1)[0]?.phase ?? -1;
+  document.querySelectorAll('details.acc[data-phase]').forEach(d=>{
+    const pill=d.querySelector('.now-pill'); if(pill)pill.hidden=Number(d.dataset.phase)!==phase;
+  });
+  const f=tz=>new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date());
+  clkSD.textContent=f('America/Los_Angeles');clkTP.textContent=f('Europe/Rome');clkCH.textContent=f('Europe/Zurich');
+}
+
+/* WEATHER + SUN */
+const WMO={0:'☀ clear',1:'🌤 fair',2:'⛅ pt cloudy',3:'☁ overcast',45:'🌫 fog',48:'🌫 fog',51:'🌦 drizzle',53:'🌦 drizzle',55:'🌧 drizzle',61:'🌧 rain',63:'🌧 rain',65:'🌧 hvy rain',71:'🌨 snow',73:'🌨 snow',75:'❄ hvy snow',80:'🌦 showers',81:'🌧 showers',82:'⛈ hvy shwrs',95:'⛈ t-storm',96:'⛈ hail',99:'⛈ hail'};
+async function wx(lat,lon,tz,el,sunEl){
+  try{
+    const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=${encodeURIComponent(tz)}&forecast_days=1`;
+    const r=await fetch(u);const j=await r.json();
+    const c=Math.round(j.current.temperature_2m),code=j.current.weather_code;
+    const hi=Math.round(j.daily.temperature_2m_max[0]),lo=Math.round(j.daily.temperature_2m_min[0]);
+    el.innerHTML=`${WMO[code]||'—'} <span class="hi">${c}°C</span> ${lo}–${hi}°`;
+    const sr=j.daily.sunrise[0].slice(11,16),ss=j.daily.sunset[0].slice(11,16);
+    sunEl.textContent=`☉ ${sr} — ${ss}`;
+  }catch(e){el.textContent='wx offline';}
+}
+async function fx(){
+  try{
+    const r=await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,CHF');const j=await r.json();
+    document.getElementById('fxRow').textContent=`$1 = €${j.rates.EUR.toFixed(2)} · CHF ${j.rates.CHF.toFixed(2)}`;
+  }catch(e){document.getElementById('fxRow').textContent='rates offline';}
+}
+
+/* MAP */
+function buildMap(){
+  const map=L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'© OpenStreetMap'}).addTo(map);
+  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:7,color,weight:2,fillColor:color,fillOpacity:.7}).addTo(map).bindPopup(`<b>${title}</b><br>${body}`);
+  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sea').trim();
+  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--alp').trim();
+  const BLZ=getComputedStyle(document.documentElement).getPropertyValue('--blaze').trim();
+  mk(32.7338,-117.1933,BLZ,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
+  mk(38.1760,13.0910,BLZ,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
+  mk(38.0175,12.5449,SEA,'Trapani base','Via Spalti 33, 4th fl · Aug 18–22');
+  mk(38.1740,12.7350,SEA,'San Vito Lo Capo','Sport + DWS · 40 min');
+  mk(38.1120,12.8000,SEA,'Zingaro','DWS + coves · 50 min');
+  mk(38.0372,12.5865,SEA,'Erice','Cable car + pastries · 10 min');
+  mk(37.9910,12.5030,SEA,'Salt pans','Sunset · 15 min');
+  mk(47.4581,8.5555,BLZ,'ZRH Zurich','Land Aug 22 11:45 · Europcar 12:30');
+  mk(46.2000,6.8690,ALP,'Champoussin base','Route de Champoussin 22 · Aug 22–29');
+  mk(46.1500,7.0000,ALP,'Lac de Salanfe','Trailhead Van d\'en Haut · 45 min · approx');
+  mk(46.3450,6.8360,ALP,'Lac de Taney','Trailhead Le Flon · 40 min · approx');
+  mk(46.0770,6.9270,ALP,'Emosson Dam','Reservoir + dino tracks · 1 hr');
+  mk(46.2830,7.2140,ALP,'Derborence','Landslide valley · 1 hr · approx');
+  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt · 1h45');
+  mk(46.2381,6.1080,BLZ,'GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40');
+}
+
+/* ICS */
+function icsEvent(uid,title,startZ,endZ,loc){
+  const f=s=>s.replace(/[-:]/g,'').replace('.000','');
+  return['BEGIN:VEVENT','UID:'+uid+'@travl','DTSTAMP:'+f(new Date().toISOString()).slice(0,15)+'Z','DTSTART:'+startZ,'DTEND:'+endZ,'SUMMARY:'+title,'LOCATION:'+loc,'END:VEVENT'].join('\r\n');
+}
+const EV={
+ ua8932:['UA 8932 SAN→MUC (Lufthansa)','20260818T001500Z','20260818T112500Z','San Diego Intl'],
+ lh1916:['LH 1916 MUC→PMO','20260818T132000Z','20260818T152000Z','Munich Airport'],
+ hertz1:['Hertz pickup PMO · L662E040086','20260818T163000Z','20260818T170000Z','Palermo Airport'],
+ kindred:['Kindred check-in Trapani','20260818T140000Z','20260818T150000Z','Via Spalti 33 Trapani'],
+ lx1741:['LX 1741 PMO→ZRH · ACWOBL/YJPCZI','20260822T074500Z','20260822T094500Z','Palermo Airport'],
+ europcar:['Europcar pickup ZRH · 746398455','20260822T103000Z','20260822T110000Z','Zurich Airport'],
+ resort:['Portes du Soleil check-in · A1900002356418001','20260822T140000Z','20260822T150000Z','Route de Champoussin 22'],
+ ua8391:['UA 8391 GVA→YUL (Air Canada)','20260829T104000Z','20260829T184000Z','Geneva Airport'],
+ ua8607:['UA 8607 YUL→SAN (Air Canada)','20260829T214500Z','20260830T033900Z','Montreal YUL']
+};
+function downloadICS(key){
+  const evs=key==='ALL'?Object.entries(EV).map(([k,v])=>icsEvent(k,...v)):[icsEvent(key,...EV[key])];
+  const cal=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//travl//EN',...evs,'END:VCALENDAR'].join('\r\n');
+  const b=new Blob([cal],{type:'text/calendar'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=key==='ALL'?'travl-full-trip.ics':`travl-${key}.ics`;a.click();URL.revokeObjectURL(a.href);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ics]');if(b)downloadICS(b.dataset.ics);});
+
+/* CHECKLISTS */
+function lists(){
+  document.querySelectorAll('ul.check').forEach(ul=>{
+    const store=ul.dataset.store;
+    ul.querySelectorAll('.box').forEach((b,i)=>{
+      if(localStorage.getItem(store+i)==='1'){b.setAttribute('aria-checked','true');b.textContent='✓';b.nextElementSibling.innerHTML='<s>'+b.nextElementSibling.innerHTML+'</s>';}
+      const toggle=()=>{
+        const on=b.getAttribute('aria-checked')!=='true';
+        b.setAttribute('aria-checked',on?'true':'false');b.textContent=on?'✓':'';
+        const t=b.nextElementSibling;
+        t.innerHTML=on?'<s>'+t.innerHTML+'</s>':t.innerHTML.replace(/^<s>|<\/s>$/g,'');
+        localStorage.setItem(store+i,on?'1':'0');
+      };
+      b.addEventListener('click',toggle);
+      b.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle();}});
+    });
+  });
+}
+
+/*STATUS*/
+/* LIVE FLIGHT STATUS via /api/flights (AeroDataBox behind Vercel env key) */
+const DEPS={UA8932:'2026-08-18T00:15:00Z',LH1916:'2026-08-18T13:20:00Z',LX1741:'2026-08-22T07:45:00Z',UA8391:'2026-08-29T10:40:00Z',UA8607:'2026-08-29T21:45:00Z'};
+async function loadStatus(el,force){
+  const f=el.dataset.f,d=el.dataset.d,dep=Date.parse(DEPS[f]);
+  const inWindow=Date.now()>dep-48*3600e3&&Date.now()<dep+24*3600e3;
+  if(!inWindow&&!force){el.textContent=f+' · status opens T-48h';return;}
+  el.textContent=f+' · checking…';
+  try{
+    const r=await fetch(`/api/flights?flight=${f}&date=${d}`);
+    if(r.status===501){el.textContent=f+' · status offline (no key)';return;}
+    if(!r.ok)throw 0;
+    const j=await r.json();
+    const st=(j.status||'scheduled').toUpperCase();
+    const gate=j.dep.gate?' · GATE '+j.dep.gate:'';
+    const term=j.dep.terminal?' · T'+j.dep.terminal:'';
+    const rev=j.dep.rev&&j.dep.rev!==j.dep.sched?' · NEW '+j.dep.rev.slice(11,16):'';
+    el.textContent=`${f} · ${st}${term}${gate}${rev}`;
+    el.classList.remove('ok','warn');
+    el.classList.add(/DELAY|CANCEL|DIVERT/i.test(st)||rev?'warn':'ok');
+  }catch(e){el.textContent=f+' · status unavailable';}
+}
+function statusBoot(){
+  document.querySelectorAll('.fstat').forEach(el=>{
+    loadStatus(el,false);
+    el.addEventListener('click',()=>loadStatus(el,true));
+  });
+  setInterval(()=>document.querySelectorAll('.fstat').forEach(el=>loadStatus(el,false)),10*60*1000);
+}
+
+let booted=false;
+function boot(){
+  if(booted)return;booted=true;
+  tick();setInterval(tick,1000);
+  renderToday();setInterval(renderToday,60000);
+  wx(38.02,12.54,'Europe/Rome',wxTP,sunTP);
+  wx(46.20,6.87,'Europe/Zurich',wxCH,sunCH);
+  wx(32.72,-117.16,'America/Los_Angeles',wxSD,sunSD);
+  fx();
+  buildMap();
+  statusBoot();
+}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script>
+</body>
+</html>
