@@ -14,27 +14,24 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root {
-  /* Hybrid Tactical Creative Palette */
-  --bg-core: #0B0F0D;        /* Deep OD Green/Black */
-  --bg-panel: #131A17;       /* Raised Panel Green */
+  --bg-core: #0B0F0D;
+  --bg-panel: #131A17;
   --bg-panel-hover: #19231F;
-  --line-dim: #22302A;       /* Dark grid lines */
-  --line-bright: #3A4E45;    
+  --line-dim: #22302A;
+  --line-bright: #3A4E45;
   
-  /* Text */
-  --text-main: #D8E2DC;      /* Bone/Ash */
-  --text-muted: #6D857A;     /* Muted foliage */
+  --text-main: #D8E2DC;
+  --text-muted: #6D857A;
   
-  /* Tactical & Futuristic Accents */
-  --coyote: #C5A880;         /* Multicam Sand - Primary text accent */
-  --sicily: #00E5FF;         /* Neon Cyan - Water ops */
-  --valais: #00FF88;         /* Neon Acid Green - Alpine ops */
-  --transit: #FF5E00;        /* Blaze Orange - Action/Transit */
+  --coyote: #C5A880;
+  --sicily: #00E5FF;
+  --valais: #00FF88;
+  --transit: #FF5E00;
   --danger: #FF2A2A;
 
   --hud-font: 'Rajdhani', sans-serif;
   --data-font: 'JetBrains Mono', monospace;
-  --radius: 6px;             /* Sharper corners for tactical feel */
+  --radius: 6px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -113,7 +110,6 @@ header.hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0;
 .chip .wx .hi { color: var(--text-main); font-weight: 700; }
 .chip .sun { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
-/* CHIP THEATER COLORS */
 .chip:nth-child(1) { border-left-color: var(--transit); }
 .chip:nth-child(2) { border-left-color: var(--sicily); }
 .chip:nth-child(3) { border-left-color: var(--valais); }
@@ -129,7 +125,7 @@ main { max-width: 780px; margin: 0 auto; padding: 16px 20px 90px; }
 #todayCard .row .t { font-size: 0.9rem; font-weight: 700; color: var(--valais); white-space: nowrap; min-width: 74px; }
 #todayCard .row .d { font-size: 0.95rem; color: var(--text-main); }
 
-/* SECTIONS (Dynamic Generation) */
+/* SECTIONS */
 .chapter { margin-top: 24px; }
 details.acc { background: var(--bg-panel); border: 1px solid var(--line-dim); border-radius: var(--radius); overflow: hidden; transition: all 0.3s ease; }
 details.acc:hover { border-color: var(--line-bright); }
@@ -138,7 +134,6 @@ summary.chead { list-style: none; cursor: pointer; display: flex; align-items: c
 summary.chead::-webkit-details-marker { display: none; }
 summary.chead .tag { font-family: var(--data-font); font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.15em; color: var(--bg-core); }
 
-/* TAG COLORS */
 .sic-t { background: var(--sicily); box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
 .swi-t { background: var(--valais); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
 .swap-t { background: var(--transit); box-shadow: 0 0 10px rgba(255, 94, 0, 0.4); }
@@ -177,7 +172,7 @@ summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); c
 .fstat.warn { border-color: var(--transit); color: var(--transit); border-style: solid; background: rgba(255,94,0,0.05); }
 
 /* MAP */
-#map { height: 440px; border-radius: 4px; border: 1px solid var(--line-bright); margin-top: 8px; z-index: 1; filter: invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+#map { height: 440px; border-radius: 4px; border: 1px solid var(--line-bright); margin-top: 8px; z-index: 1; }
 .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--line-bright); }
 .leaflet-popup-content { font-family: var(--data-font); font-size: 0.85rem; }
 .leaflet-popup-content b { font-family: var(--hud-font); font-size: 1.2rem; text-transform: uppercase; color: var(--coyote); letter-spacing: 0.05em; }
@@ -207,7 +202,7 @@ footer .mono { letter-spacing: 0.1em; }
       <span class="code" style="color:var(--sicily); text-shadow:0 0 15px rgba(0,229,255,0.4)">PMO</span><span class="arrow">▸</span>
       <span class="code" style="color:var(--valais); text-shadow:0 0 15px rgba(0,255,136,0.4)">GVA</span>
     </div>
-    <div class="meta">Boarding · Aug 17 – 29, 2026 · Holt + Doeckel</div>
+    <div class="meta">Boarding · Aug 17 – 29, 2026 · Keegan Holt + Will Doeckel</div>
     <div class="dashed" aria-hidden="true"></div>
     <label for="pw">Clearance Code</label>
     <input id="pw" type="password" autocomplete="off" placeholder="[ _ _ _ _ _ _ _ ]" aria-describedby="gateErr">
@@ -218,13 +213,13 @@ footer .mono { letter-spacing: 0.1em; }
 
 <div id="app">
 <nav>
-  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#mapsec">Intel Map</a><a href="#docs">Comms/Docs</a><a href="#todo">Loadout</a>
+  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#mapsec">Intel Map</a><a href="#docs">Comms/Docs</a><a href="#todo">Keegan Loadout</a>
 </nav>
 
 <header class="hero">
   <div class="eyebrow">travl.holtanalytics.org</div>
   <h1><span class="sic">SICILIA</span> <span class="arrow">▸</span> <span class="swi">VALAIS</span></h1>
-  <div class="dates">MON AUG 17 — SAT AUG 29, 2026 · 12 NIGHTS</div>
+  <div class="dates">MON AUG 17 — SAT AUG 29, 2026 · 12 NIGHTS · PAX: KEEGAN + WILL</div>
 
   <div class="cd-wrap">
     <div class="cd-label" id="cdLabel">T-MINUS TO WHEELS UP</div>
@@ -262,24 +257,27 @@ footer .mono { letter-spacing: 0.1em; }
   <summary class="chead"><span class="tag ops-t">MAP</span> Theater overview <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div id="map"></div>
-    <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
+    <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily (DWS & Chilling)</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais (Alpine Hikes)</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
   </div>
 </details>
 </section>
 
 <section class="chapter" id="docs">
 <details class="acc" open>
-  <summary class="chead"><span class="tag ops-t">DOCS</span> Secure Comms & Quick Access <span class="chev">▼</span></summary>
+  <summary class="chead"><span class="tag ops-t">DOCS</span> Personnel Refs & Secure Comms <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div class="statusbtns">
-      <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=AR526H&LastName=HOLT&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (K)</a>
+      <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=AR526H&LastName=HOLT&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (KEEGAN)</a>
+      <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=ASGTLJ&LastName=DOECKEL&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (WILL)</a>
       <a href="https://www.swiss.com" target="_blank" rel="noopener">SWISS MANAGE</a>
       <a href="https://www.hertz.com/us/en/reservation" target="_blank" rel="noopener">HERTZ RES</a>
       <a href="https://cars.booking.com" target="_blank" rel="noopener">EUROPCAR BOOKING</a>
       <button data-ics="ALL">⬇ D/L FULL ITINERARY .ICS</button>
     </div>
     <dl class="kv" style="margin-top:20px">
-      <dt>Resort</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--valais);text-decoration:none">+41 24 477 26 82</a></dd>
+      <dt>Resort Booking</dt><dd class="mono">Portes du Soleil · Ref: <span class="conf">A1900002356418001</span> (William Doeckel)</dd>
+      <dt>Resort Contact</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--valais);text-decoration:none">+41 24 477 26 82</a></dd>
+      <dt>Drivers</dt><dd>Keegan Holt (Hertz Primary) · Will Doeckel (Europcar Primary)</dd>
       <dt>EU emergency</dt><dd class="mono">112 (IT + CH, all services)</dd>
       <dt>US Embassy IT</dt><dd class="mono">+39 06 46741</dd>
       <dt>US Embassy CH</dt><dd class="mono">+41 31 357 70 11</dd>
@@ -291,7 +289,7 @@ footer .mono { letter-spacing: 0.1em; }
 
 <section class="chapter" id="todo">
 <details class="acc" open>
-  <summary class="chead"><span class="tag swap-t">LISTS</span> Deployment Loadout <span class="chev">▼</span></summary>
+  <summary class="chead"><span class="tag swap-t">LISTS</span> Keegan's 2-Week Adventure Pack List <span class="chev">▼</span></summary>
   
   <div class="subhead">// PRE-FLIGHT PROTOCOL</div>
   <ul class="check" data-store="travl_c">
@@ -303,25 +301,22 @@ footer .mono { letter-spacing: 0.1em; }
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Physical Amex + both licenses; extra driver present at ZRH counter</span></li>
   </ul>
   
-  <div class="subhead">// HARDWARE & TECH</div>
+  <div class="subhead">// CARRY & HARDWARE</div>
   <ul class="check" data-store="travl_tech_c">
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sony body + batteries/charger (Pelican hard case)</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Zeiss 55mm f/1.8 + custom padded sleeve (perfect for Erice streets)</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>70-200mm telephoto + custom padded sleeve (Matterhorn punch-ins)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Mystery Ranch bag for EDC</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Laptop + Chargers + SD cards + Earbuds</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sony body + Zeiss 55mm f/1.8 + 70-200mm telephoto (Pelican case & padded sleeves)</span></li>
   </ul>
 
-  <div class="subhead">// CLIMB KIT (SICILY)</div>
-  <ul class="check" data-store="travl_pk_c">
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Rope (70m) + draws ×12 + harnesses + belay device</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Climbing shoes + chalk bags + tape</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>DWS: quick-dry shorts, water shoes, dry bag for phone</span></li>
-  </ul>
-
-  <div class="subhead">// HIKE KIT (VALAIS)</div>
-  <ul class="check" data-store="travl_hk_c">
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Boots + trail runners + poles</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Layers: shell, fleece, sun hoody — alpine mornings are cold in August</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>2L water capacity + MRE/snacks + small first aid</span></li>
+  <div class="subhead">// CLOTHING & OUTDOOR GEAR</div>
+  <ul class="check" data-store="travl_gear_c">
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>5 days of clothes (washing mid-trip)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Shorts & Hiking pants</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Hiking shoes & Darn Tough socks</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sun hoodies & Arc'teryx layers</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Hammock</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Headbands, Hat, Sunglasses</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Nalgene bottle & Salt packets</span></li>
   </ul>
 </details>
 </section>
@@ -329,7 +324,7 @@ footer .mono { letter-spacing: 0.1em; }
 </main>
 <footer>
   <div class="mono">SICILIA ▸ VALAIS · A HOLT PRODUCTION</div>
-  <div class="mono" style="margin-top:8px; color:var(--line-bright);">weather: open-meteo · maps: cartodb · state: local storage</div>
+  <div class="mono" style="margin-top:8px; color:var(--line-bright);">weather: open-meteo · maps: cartodb dark matter · state: local storage</div>
 </footer>
 </div>
 
@@ -340,15 +335,18 @@ const ITINERARY_DATA = [
   {
     phase: 0, tag: 'AUG 17–18', tagClass: 'sic-t', title: 'Insertion',
     legs: [
-      { t: '17:15', d: '<b>UA 8932</b> SAN ▸ MUC · Lufthansa A350 · 11h10 · seats 29C (K) / 29D (W)' },
+      { t: '17:15', d: '<b>UA 8932</b> SAN ▸ MUC · Lufthansa A350 · 11h10 · Keegan: 29C / Will: 29D' },
       { t: '13:25 +1', d: 'Land Munich · connection 1h55' },
       { t: '15:20', d: '<b>LH 1916</b> MUC ▸ PMO · A321neo · 2h · seats unassigned' },
       { t: '17:20', d: 'Land Palermo' },
       { t: '18:30', d: '<b>Hertz pickup</b> PMO · <span class="conf">L662E040086</span> · Jeep Avenger class · $312.42' },
       { t: '~19:30', d: 'Arrive Trapani base' }
     ],
-    kvs: [ { k: 'United ref', v: '<span class="conf">AR526H</span> K · <span class="conf">ASGTLJ</span> W' } ],
-    notes: [ { text: '<b>Counter kit:</b> physical Amex (Keegan) · US license · <b>AAA IDP — legally required in Italy.</b>', warn: true } ],
+    kvs: [ 
+      { k: 'United Keegan', v: '<span class="conf">AR526H</span>' },
+      { k: 'United Will', v: '<span class="conf">ASGTLJ</span>' }
+    ],
+    notes: [ { text: '<b>Counter kit:</b> Physical Amex (Keegan) · US licenses (Keegan + Will) · <b>AAA IDP — legally required in Italy.</b>', warn: true } ],
     links: [
       { url: 'https://www.flightaware.com/live/flight/UAL8932', label: '✈ UA8932 STATUS' },
       { url: 'https://www.flightaware.com/live/flight/DLH1916', label: '✈ LH1916 STATUS' }
@@ -359,7 +357,7 @@ const ITINERARY_DATA = [
     flights: [ { f: 'UA8932', d: '2026-08-17' }, { f: 'LH1916', d: '2026-08-18' } ]
   },
   {
-    phase: 1, tag: 'AUG 18–22', tagClass: 'sic-t', title: 'Sector 1 · Trapani',
+    phase: 1, tag: 'AUG 18–22', tagClass: 'sic-t', title: 'Sector 1 · Trapani (DWS & Chilling)',
     kvs: [
       { k: 'Base', v: '<b>Kindred swap · John Francis\'s place</b> · 4 nights' },
       { k: 'Grid', v: 'Via Spalti 33, 4th floor · 91100 Trapani' },
@@ -367,47 +365,48 @@ const ITINERARY_DATA = [
       { k: 'Comms', v: 'Kindred Concierge + John Francis (in-app)' }
     ],
     legs: [
-      { t: '40 min', d: '<b>San Vito Lo Capo</b> — sport routes over turquoise water; DWS sectors on the headland' },
-      { t: '50 min', d: '<b>Zingaro reserve</b> — deep-water solo + swim coves' },
-      { t: '10 min', d: '<b>Erice</b> — cable car, medieval streets, Maria Grammatico pastries' },
-      { t: '15 min', d: '<b>Salt pans</b> — sunset watch, windmills' }
+      { t: '40 min', d: '<b>San Vito Lo Capo</b> — deep water soloing on limestone over turquoise sea + beach chill' },
+      { t: '50 min', d: '<b>Zingaro Reserve</b> — deep water solo spots, sea caves, swimming coves' },
+      { t: '10 min', d: '<b>Erice</b> — medieval mountain streets, Maria Grammatico pastries, coastal views' },
+      { t: '15 min', d: '<b>Salt Pans & Eats</b> — sunset watch, windmills, Trapani couscous & fresh seafood' }
     ],
     actions: [ { ics: 'kindred', label: '+ CAL CHECK-IN' } ]
   },
   {
-    phase: 2, tag: 'SAT AUG 22', tagClass: 'swap-t', title: 'Swap day',
+    phase: 2, tag: 'SAT AUG 22', tagClass: 'swap-t', title: 'Swap Day (Italy → Switzerland)',
     legs: [
       { t: '06:15', d: 'Depart base — packed the night prior' },
       { t: '07:30', d: 'Hertz return PMO (desk opens 07:30)' },
-      { t: '09:45', d: '<b>LX 1741</b> PMO ▸ ZRH · <span class="conf">ACWOBL</span> K · <span class="conf">YJPCZI</span> W · Air Baltic A220' },
+      { t: '09:45', d: '<b>LX 1741</b> PMO ▸ ZRH · Keegan: <span class="conf">ACWOBL</span> · Will: <span class="conf">YJPCZI</span> · Air Baltic A220' },
       { t: '11:45', d: 'Land Zurich' },
       { t: '12:30', d: '<b>Europcar pickup</b> ZRH · <span class="conf">746398455</span> · VW Polo auto' },
       { t: '~15:30', d: 'Arrive Champoussin — reception closes 18:00' }
     ],
     notes: [
-      { text: '<b>Counter:</b> CHF 125.03 due (one-way + extra driver — must be present with license). Vignette should be included; decline winter add-ons.', warn: true },
-      { text: '<b>Baggage:</b> LX fare = Economy Light, 8 kg carry-on ONLY. Add checked bags to BOTH refs before the airport or the rope stays in Sicily.', warn: true }
+      { text: '<b>Counter:</b> CHF 125.03 due (one-way + extra driver — both Keegan and Will present with licenses). Vignette included; decline winter add-ons.', warn: true },
+      { text: '<b>Baggage:</b> LX fare = Economy Light, 8 kg carry-on ONLY. Add checked bags to BOTH refs before airport.', warn: true }
     ],
     links: [ { url: 'https://www.flightaware.com/live/flight/SWR1741', label: '✈ LX1741 STATUS', alpine: true } ],
     actions: [ { ics: 'lx1741', label: '+ CAL LX1741', alpine: true }, { ics: 'europcar', label: '+ CAL EUROPCAR', alpine: true } ],
     flights: [ { f: 'LX1741', d: '2026-08-22' } ]
   },
   {
-    phase: 3, tag: 'AUG 22–29', tagClass: 'swi-t', title: 'Sector 2 · Champoussin',
+    phase: 3, tag: 'AUG 22–29', tagClass: 'swi-t', title: 'Sector 2 · Champoussin (Alpine Lake Hikes)',
     kvs: [
       { k: 'Base', v: '<b>Portes du Soleil</b> · 7 nights · 1BR full kitchen' },
       { k: 'Grid', v: 'Route de Champoussin 22, CH-1873' },
-      { k: 'Ref', v: '<span class="conf">A1900002356418001</span> (name: William Doeckel)' },
+      { k: 'Ref', v: '<span class="conf">A1900002356418001</span> (William Doeckel)' },
       { k: 'Comms', v: '<span class="mono">+41 24 477 26 82</span>' },
       { k: 'Window', v: 'In Sat 22 · 16:00 → Out Sat 29 · 10:00' }
     ],
-    notes: [ { text: '<b>Pay at check-in:</b> 25 CHF/pp utility + 3 CHF/pp/night tax + 200 CHF deposit (card imprint) — ~292 CHF total for two.', warn: true } ],
+    notes: [ { text: '<b>Pay at check-in:</b> ~292 CHF total for two (utilities, tourist tax, deposit imprint).', warn: true } ],
     legs: [
-      { t: '45 min', d: '<b>Lac de Salanfe</b> — alpine lake under the Dents du Midi' },
-      { t: '40 min', d: '<b>Lac de Taney</b> — trailhead at Le Flon' },
-      { t: '60 min', d: '<b>Emosson Dam</b> — reservoir traverse + dinosaur tracks' },
-      { t: '60 min', d: '<b>Derborence</b> — landslide valley, zero crowds' },
-      { t: 'Big day', d: '<b>Zermatt</b> — drive Täsch 1h45, train up, Matterhorn' }
+      { t: '45 min', d: '<b>Lac de Salanfe</b> — pristine alpine lake hike right under the Dents du Midi peaks' },
+      { t: '40 min', d: '<b>Lac de Taney</b> — trailhead at Le Flon, stunning mountain lake trek & panorama views' },
+      { t: '60 min', d: '<b>Emosson Dam</b> — high-elevation reservoir traverse & mountain vista trails' },
+      { t: '60 min', d: '<b>Derborence</b> — wild landslide valley, high mountain scenery, zero crowds' },
+      { t: 'Door-out', d: '<b>Pointe de l\'Au / Croix de l\'Aiguille</b> — ridge hikes straight from the front door' },
+      { t: 'Big day', d: '<b>Zermatt</b> — drive Täsch 1h45, mountain train up, iconic Matterhorn views' }
     ],
     actions: [ { ics: 'resort', label: '+ CAL CHECK-IN', alpine: true } ]
   },
@@ -421,7 +420,10 @@ const ITINERARY_DATA = [
       { t: '17:45', d: '<b>UA 8607</b> YUL ▸ SAN · A220' },
       { t: '20:39', d: 'Touchdown San Diego' }
     ],
-    kvs: [ { k: 'Refs', v: '<span class="conf">AR526H</span> K · <span class="conf">ASGTLJ</span> W · AC <span class="conf">ACS5LZ</span>' } ],
+    kvs: [ 
+      { k: 'Refs Keegan', v: 'UA: <span class="conf">AR526H</span> · AC: <span class="conf">ACS5LZ</span>' },
+      { k: 'Refs Will', v: 'UA: <span class="conf">ASGTLJ</span> · AC: <span class="conf">ACS5LZ</span>' }
+    ],
     links: [
       { url: 'https://www.flightaware.com/live/flight/UAL8391', label: '✈ UA8391 STATUS', alpine: true },
       { url: 'https://www.flightaware.com/live/flight/UAL8607', label: '✈ UA8607 STATUS', alpine: true }
@@ -474,8 +476,16 @@ function renderItinerary() {
 /* GATE */
 const HASH='d5d5e69ef6f8f3fbb87ffe5ae5df2af6d079d915bd8f7f10b2414a8f554afac0';
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function unlock(){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';boot()}
-if(sessionStorage.getItem('travl_ok')==='1')unlock();
+function unlock(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+  boot();
+  if (mapObj) {
+    setTimeout(() => { mapObj.invalidateSize(); }, 250);
+  }
+}
+if(sessionStorage.getItem('travl_ok')==='1') unlock();
+
 document.getElementById('gateForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const v=document.getElementById('pw').value.trim().toLowerCase();
@@ -498,18 +508,19 @@ const TRIP_START=M[0].t, TRIP_END=M[5].t;
 const AGENDA={
  '2026-08-17':{tz:'America/Los_Angeles',title:'Insertion · SAN',rows:[['17:15','UA 8932 departs SAN — be at airport by 14:15']]},
  '2026-08-18':{tz:'Europe/Rome',title:'Arrival · Sicily',rows:[['13:25','Land Munich (connection 1h55)'],['15:20','LH 1916 departs MUC'],['17:20','Land Palermo'],['18:30','Hertz pickup'],['~19:30','Arrive Trapani base']]},
- '2026-08-19':{tz:'Europe/Rome',title:'Sicily · Day 1',rows:[['—','San Vito Lo Capo recon: routes + DWS sectors'],['PM','Town dinner — couscous']]},
- '2026-08-20':{tz:'Europe/Rome',title:'Sicily · Day 2',rows:[['—','Zingaro DWS + swim coves'],['Sunset','Salt pans']]},
- '2026-08-21':{tz:'Europe/Rome',title:'Sicily · Day 3',rows:[['—','Climb AM · Erice cable car PM'],['EVE','Pack + Swiss online check-in opens']]},
+ '2026-08-19':{tz:'Europe/Rome',title:'Sicily · Day 1',rows:[['—','San Vito Lo Capo: DWS ocean rock climbing & beach chill'],['PM','Town dinner — couscous & fresh seafood']]},
+ '2026-08-20':{tz:'Europe/Rome',title:'Sicily · Day 2',rows:[['—','Zingaro Reserve: DWS coves & sea cave swim'],['Sunset','Salt pans watch']]},
+ '2026-08-21':{tz:'Europe/Rome',title:'Sicily · Day 3',rows:[['—','Erice cable car & Maria Grammatico pastry run'],['EVE','Pack + Swiss online check-in opens']]},
  '2026-08-22':{tz:'Europe/Zurich',title:'SWAP DAY',rows:[['06:15','Depart base'],['07:30','Hertz return PMO'],['09:45','LX 1741 ▸ ZRH'],['11:45','Land Zurich'],['12:30','Europcar pickup'],['~15:30','Champoussin — reception closes 18:00']]},
- '2026-08-23':{tz:'Europe/Zurich',title:'Valais · Day 1',rows:[['—','Door-out: Pointe de l\'Au · grab Multi-Pass']]},
- '2026-08-24':{tz:'Europe/Zurich',title:'Valais · Day 2',rows:[['—','Lac de Salanfe (45 min drive)']]},
- '2026-08-25':{tz:'Europe/Zurich',title:'Valais · Day 3',rows:[['—','Lac de Taney via Le Flon (40 min)']]},
- '2026-08-26':{tz:'Europe/Zurich',title:'Valais · Day 4',rows:[['—','Emosson Dam + dinosaur tracks (1 hr)']]},
- '2026-08-27':{tz:'Europe/Zurich',title:'Valais · Day 5',rows:[['—','Big day option: Zermatt via Täsch']]},
- '2026-08-28':{tz:'Europe/Zurich',title:'Valais · Day 6',rows:[['—','Derborence or rest day'],['12:40','United return check-in opens'],['EVE','Pack + fuel the Polo']]},
+ '2026-08-23':{tz:'Europe/Zurich',title:'Valais · Day 1',rows:[['—','Door-out ridge hike: Pointe de l\'Au · grab Multi-Pass']]},
+ '2026-08-24':{tz:'Europe/Zurich',title:'Valais · Day 2',rows:[['—','Lac de Salanfe alpine lake trek (45 min drive)']]},
+ '2026-08-25':{tz:'Europe/Zurich',title:'Valais · Day 3',rows:[['—','Lac de Taney hike via Le Flon (40 min)']]},
+ '2026-08-26':{tz:'Europe/Zurich',title:'Valais · Day 4',rows:[['—','Emosson Dam reservoir hike + mountain vistas (1 hr)']]},
+ '2026-08-27':{tz:'Europe/Zurich',title:'Valais · Day 5',rows:[['—','Zermatt & Matterhorn viewing day via Täsch']]},
+ '2026-08-28':{tz:'Europe/Zurich',title:'Valais · Day 6',rows:[['—','Derborence landslide valley hike'],['12:40','United return check-in opens'],['EVE','Pack + fuel the Polo']]},
  '2026-08-29':{tz:'Europe/Zurich',title:'EXTRACTION',rows:[['08:00','Roll out of Champoussin'],['10:00','Europcar drop GVA'],['12:40','UA 8391 ▸ YUL'],['17:45','UA 8607 ▸ SAN'],['20:39','Touchdown San Diego']]}
 };
+
 function renderToday(){
   const now=Date.now(); let tz='America/Los_Angeles';
   if(now>=M[1].t&&now<M[2].t)tz='Europe/Rome'; else if(now>=M[2].t)tz='Europe/Zurich';
@@ -552,7 +563,7 @@ function tick(){
     const pill=d.querySelector('.now-pill'); if(pill)pill.hidden=Number(d.dataset.phase)!==phase;
   });
   
-  const f=tz=>new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date());
+  const f=tz=>new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date());
   const clkSD = document.getElementById('clkSD'); if(clkSD) clkSD.textContent=f('America/Los_Angeles');
   const clkTP = document.getElementById('clkTP'); if(clkTP) clkTP.textContent=f('Europe/Rome');
   const clkCH = document.getElementById('clkCH'); if(clkCH) clkCH.textContent=f('Europe/Zurich');
@@ -583,33 +594,38 @@ async function fx(){
   }catch(e){fxRow.textContent='RATES OFFLINE';}
 }
 
-/* MAP RE-INTEGRATION (Tactical Invert) */
+/* MAP RE-INTEGRATION (CARTO DARK MATTER) */
+let mapObj = null;
 function buildMap(){
   const mapEl = document.getElementById('map');
-  if (!mapEl || typeof L === 'undefined') return;
-  const map=L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
-  // Using light tiles, but heavily inverted in CSS to create a tactical radar look
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap, &copy; CartoDB'}).addTo(map);
+  if (!mapEl || typeof L === 'undefined' || mapObj) return;
   
-  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1}).addTo(map).bindPopup(`<b>${title}</b><br>${body}`);
-  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sicily').trim() || '#00E5FF';
-  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--valais').trim() || '#00FF88';
-  const AMB=getComputedStyle(document.documentElement).getPropertyValue('--transit').trim() || '#FF5E00';
+  mapObj = L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
+  
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  }).addTo(mapObj);
+  
+  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1}).addTo(mapObj).bindPopup(`<b>${title}</b><br>${body}`);
+  const SEA = '#00E5FF';
+  const ALP = '#00FF88';
+  const AMB = '#FF5E00';
   
   mk(32.7338,-117.1933,AMB,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
   mk(38.1760,13.0910,AMB,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
   mk(38.0175,12.5449,SEA,'Trapani base','Via Spalti 33, 4th fl · Aug 18–22');
-  mk(38.1740,12.7350,SEA,'San Vito Lo Capo','Sport + DWS · 40 min');
-  mk(38.1120,12.8000,SEA,'Zingaro','DWS + coves · 50 min');
-  mk(38.0372,12.5865,SEA,'Erice','Cable car + pastries · 10 min');
-  mk(37.9910,12.5030,SEA,'Salt pans','Sunset · 15 min');
+  mk(38.1740,12.7350,SEA,'San Vito Lo Capo','DWS ocean rock climbing & beach chill');
+  mk(38.1120,12.8000,SEA,'Zingaro','DWS coves & sea cave swim');
+  mk(38.0372,12.5865,SEA,'Erice','Cable car + pastries');
+  mk(37.9910,12.5030,SEA,'Salt pans','Sunset watch');
   mk(47.4581,8.5555,AMB,'ZRH Zurich','Land Aug 22 11:45 · Europcar 12:30');
   mk(46.2000,6.8690,ALP,'Champoussin base','Route de Champoussin 22 · Aug 22–29');
-  mk(46.1500,7.0000,ALP,'Lac de Salanfe','Trailhead Van d\'en Haut · 45 min');
-  mk(46.3450,6.8360,ALP,'Lac de Taney','Trailhead Le Flon · 40 min');
-  mk(46.0770,6.9270,ALP,'Emosson Dam','Reservoir + dino tracks · 1 hr');
-  mk(46.2830,7.2140,ALP,'Derborence','Landslide valley · 1 hr');
-  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt · 1h45');
+  mk(46.1500,7.0000,ALP,'Lac de Salanfe','Alpine lake hike');
+  mk(46.3450,6.8360,ALP,'Lac de Taney','Mountain lake trek via Le Flon');
+  mk(46.0770,6.9270,ALP,'Emosson Dam','High elevation reservoir hike');
+  mk(46.2830,7.2140,ALP,'Derborence','Landslide valley mountain hike');
+  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt (Matterhorn)');
   mk(46.2381,6.1080,AMB,'GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40');
 }
 
@@ -701,6 +717,11 @@ function boot(){
   try { buildMap(); } catch(e) { console.error('Map Error:', e); }
   try { lists(); } catch(e) { console.error('Lists Error:', e); }
   try { statusBoot(); } catch(e) { console.error('Status Error:', e); }
+}
+
+// Auto boot if already unlocked
+if(sessionStorage.getItem('travl_ok')==='1') {
+  unlock();
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
