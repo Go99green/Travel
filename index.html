@@ -4,157 +4,198 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#FAF7F1">
+<meta name="theme-color" content="#0B0F0D">
 <title>travl · SICILIA → VALAIS · OPS AUG 2026</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{
-  --paper:#FAF7F1; --ink:#1C2426;
-  --sea:#0E7C86; --sea-deep:#0A5960;
-  --amber:#DF9A2E; --amber-soft:#F6E3C2;
-  --alp:#3E5C76; --alp-deep:#2C4257;
-  --pine:#31584A; --ice:#DCE8EF;
-  --line:#E3DCCE; --card:#FFFFFF; --radius:14px;
+:root {
+  /* Hybrid Tactical Creative Palette */
+  --bg-core: #0B0F0D;        /* Deep OD Green/Black */
+  --bg-panel: #131A17;       /* Raised Panel Green */
+  --bg-panel-hover: #19231F;
+  --line-dim: #22302A;       /* Dark grid lines */
+  --line-bright: #3A4E45;    
+  
+  /* Text */
+  --text-main: #D8E2DC;      /* Bone/Ash */
+  --text-muted: #6D857A;     /* Muted foliage */
+  
+  /* Tactical & Futuristic Accents */
+  --coyote: #C5A880;         /* Multicam Sand - Primary text accent */
+  --sicily: #00E5FF;         /* Neon Cyan - Water ops */
+  --valais: #00FF88;         /* Neon Acid Green - Alpine ops */
+  --transit: #FF5E00;        /* Blaze Orange - Action/Transit */
+  --danger: #FF2A2A;
+
+  --hud-font: 'Rajdhani', sans-serif;
+  --data-font: 'JetBrains Mono', monospace;
+  --radius: 6px;             /* Sharper corners for tactical feel */
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
-body{font-family:'Instrument Sans',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;font-size:16px}
-.mono{font-family:'IBM Plex Mono',monospace}
-h1,h2,h3,summary.chead{font-family:'Bricolage Grotesque','Instrument Sans',sans-serif}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+
+body {
+  font-family: var(--data-font);
+  background: var(--bg-core);
+  background-image: 
+    linear-gradient(rgba(34, 48, 42, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 48, 42, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text-main);
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+h1, h2, h3, .hud-text { font-family: var(--hud-font); text-transform: uppercase; letter-spacing: 0.05em; }
 
 /* GATE */
-#gate{position:fixed;inset:0;z-index:90;background:linear-gradient(160deg,#0A5960,#0E7C86 46%,#2C4257);display:flex;align-items:center;justify-content:center;padding:24px}
-.stub{background:var(--paper);width:100%;max-width:400px;border-radius:18px;padding:36px 32px 30px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.35)}
-.stub::before,.stub::after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;background:#0C6B73;top:58%}
-.stub::before{left:-14px}.stub::after{right:-14px}
-.stub .route{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
-.stub .code{font-family:'Bricolage Grotesque';font-weight:700;font-size:2rem}
-.stub .arrow{color:var(--amber);font-size:1.3rem}
-.stub .meta{font-size:.75rem;text-transform:uppercase;letter-spacing:.14em;color:#7A756A;margin-bottom:26px;font-family:'IBM Plex Mono'}
-.stub .dashed{border-top:2px dashed var(--line);margin:22px -32px}
-.stub label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:#7A756A;margin:14px 0 8px;font-family:'IBM Plex Mono'}
-.stub input{width:100%;font-family:'IBM Plex Mono';font-size:1.05rem;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);letter-spacing:.08em}
-.stub input:focus{outline:2px solid var(--sea);border-color:var(--sea)}
-.stub button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:10px;background:var(--sea);color:#fff;font-family:'Bricolage Grotesque';font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.05em;text-transform:uppercase}
-.stub button:hover{background:var(--sea-deep)}
-.stub button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-.stub .err{color:#B4432E;font-size:.85rem;margin-top:10px;min-height:1.2em}
+#gate { position: fixed; inset: 0; z-index: 90; background: var(--bg-core); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.stub { background: var(--bg-panel); border: 1px solid var(--line-bright); width: 100%; max-width: 420px; border-radius: var(--radius); padding: 36px 32px; box-shadow: 0 0 40px rgba(0, 229, 255, 0.05); position: relative; }
+.stub::before { content: "AUTH REQUIRED"; position: absolute; top: -10px; left: 24px; background: var(--bg-core); padding: 0 8px; font-size: 0.7rem; color: var(--transit); font-weight: 700; letter-spacing: 0.2em; }
+.stub .route { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.stub .code { font-family: var(--hud-font); font-weight: 700; font-size: 2.4rem; color: var(--text-main); }
+.stub .arrow { color: var(--line-bright); font-size: 1.2rem; }
+.stub .meta { font-size: 0.7rem; color: var(--coyote); letter-spacing: 0.1em; margin-bottom: 24px; text-transform: uppercase; }
+.stub input { width: 100%; font-family: var(--data-font); font-size: 1.2rem; padding: 14px; border: 1px solid var(--line-bright); border-radius: 4px; background: rgba(0,0,0,0.5); color: var(--valais); letter-spacing: 0.2em; text-align: center; transition: all 0.2s; }
+.stub input:focus { outline: none; border-color: var(--sicily); box-shadow: 0 0 15px rgba(0,229,255,0.2); }
+.stub input::placeholder { color: var(--line-bright); }
+.stub button { width: 100%; margin-top: 16px; padding: 14px; border: 1px solid var(--transit); border-radius: 4px; background: transparent; color: var(--transit); font-family: var(--hud-font); font-size: 1.1rem; font-weight: 700; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; }
+.stub button:hover { background: var(--transit); color: var(--bg-core); box-shadow: 0 0 20px rgba(255,94,0,0.4); }
+.stub .err { color: var(--danger); font-size: 0.8rem; margin-top: 12px; min-height: 1.2em; text-align: center; }
 
-#app{display:none}
+#app { display: none; }
 
 /* STICKY NAV */
-nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,#fff);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:10px 14px;-webkit-overflow-scrolling:touch}
-nav a{flex:0 0 auto;font-family:'IBM Plex Mono';font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;color:#6B655A;padding:6px 12px;border-radius:999px;border:1px solid transparent;transition:all 0.2s}
-nav a:hover{border-color:var(--line);color:var(--ink)}
+nav { position: sticky; top: 0; z-index: 40; background: rgba(11, 15, 13, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line-dim); display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px; scrollbar-width: none; }
+nav::-webkit-scrollbar { display: none; }
+nav a { flex: 0 0 auto; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; color: var(--text-muted); padding: 6px 14px; border-radius: 4px; border: 1px solid transparent; transition: all 0.2s; }
+nav a:hover, nav a:focus { border-color: var(--line-bright); color: var(--coyote); }
 
 /* HERO */
-header.hero{padding:52px 20px 40px;text-align:center;background:linear-gradient(180deg,rgba(14,124,134,.10),rgba(250,247,241,0) 70%);border-bottom:1px solid var(--line)}
-.hero .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.22em;color:var(--sea-deep);font-weight:600;font-family:'IBM Plex Mono'}
-.hero h1{font-size:clamp(2.2rem,7vw,3.4rem);font-weight:750;line-height:1.05;margin:8px 0 6px}
-.hero h1 .sic{color:var(--sea)}.hero h1 .swi{color:var(--alp)}
-.hero .dates{font-family:'IBM Plex Mono';font-size:.9rem;color:#5C564B}
+header.hero { padding: 60px 20px 40px; text-align: center; border-bottom: 1px solid var(--line-dim); position: relative; overflow: hidden; }
+header.hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--coyote), transparent); opacity: 0.3; }
+.hero .eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3em; color: var(--text-muted); margin-bottom: 12px; }
+.hero h1 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 700; line-height: 1.1; margin: 0 0 10px; }
+.hero h1 .sic { color: var(--text-main); text-shadow: 0 0 20px rgba(0, 229, 255, 0.4); }
+.hero h1 .swi { color: var(--text-main); text-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+.hero h1 .arrow { color: var(--line-bright); font-weight: 400; }
+.hero .dates { font-size: 0.8rem; color: var(--coyote); letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* COUNTDOWN & PROGRESS */
-.cd-wrap{max-width:640px;margin:26px auto 0;padding:0 16px}
-.cd-label{font-family:'IBM Plex Mono';font-size:.75rem;text-transform:uppercase;letter-spacing:.16em;color:#8A8272;margin-bottom:10px}
-.cd{display:flex;gap:10px;justify-content:center}
-.cd .cell{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 0;flex:1;max-width:110px;box-shadow:0 2px 10px rgba(28,36,38,.03)}
-.cd .num{font-family:'IBM Plex Mono';font-weight:700;font-size:clamp(1.5rem,6vw,2.2rem);line-height:1;color:var(--sea-deep);font-variant-numeric:tabular-nums}
-.cd .unit{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#8A8272;margin-top:5px;font-family:'IBM Plex Mono'}
-#cdDone{display:none;font-family:'Bricolage Grotesque';font-size:1.4rem;color:var(--pine);font-weight:700}
-.prog{max-width:640px;margin:26px auto 0;padding:0 16px}
-.prog .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
-.prog .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--sea),var(--amber) 50%,var(--alp));transition:width .8s ease}
-.prog .lbl{display:flex;justify-content:space-between;font-family:'IBM Plex Mono';font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#8A8272;margin-top:6px}
+.cd-wrap { max-width: 660px; margin: 34px auto 0; padding: 0 16px; }
+.cd-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); margin-bottom: 12px; }
+.cd { display: flex; gap: 12px; justify-content: center; }
+.cd .cell { background: rgba(0,0,0,0.4); border: 1px solid var(--line-bright); border-radius: var(--radius); padding: 14px 0; flex: 1; max-width: 120px; position: relative; overflow: hidden; }
+.cd .cell::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--coyote); opacity: 0.5; }
+.cd .num { font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 700; line-height: 1; color: var(--text-main); text-shadow: 0 0 10px rgba(197, 168, 128, 0.3); }
+.cd .unit { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-top: 6px; }
+#cdDone { display: none; font-family: var(--hud-font); font-size: 1.8rem; color: var(--valais); text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 15px rgba(0,255,136,0.4); }
 
-/* LIVE STRIPS */
-.live{max-width:760px;margin:30px auto 0;padding:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:center;box-shadow:0 2px 10px rgba(28,36,38,.03)}
-.chip .place{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:#8A8272;font-family:'IBM Plex Mono'}
-.chip .clock{font-family:'IBM Plex Mono';font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums;margin-top:2px}
-.chip .wx{font-size:.82rem;margin-top:3px;color:#3C443F;min-height:1.2em}
-.chip .wx .hi{color:var(--sea-deep);font-weight:600}
-.chip.alpine .wx .hi{color:var(--alp-deep)}
-.chip .sun{font-family:'IBM Plex Mono';font-size:.65rem;color:#8A8272;margin-top:2px}
-@media(max-width:560px){
-  .live{grid-template-columns:1fr;gap:8px}
-  .chip{display:grid;grid-template-columns:auto auto 1fr;gap:2px 12px;align-items:baseline;text-align:left}
-  .chip .sun{grid-column:3;text-align:right}
-  .chip .wx{margin:0}
-}
+.prog { max-width: 660px; margin: 30px auto 0; padding: 0 16px; }
+.prog .bar { height: 4px; background: var(--line-dim); overflow: hidden; border-radius: 2px; }
+.prog .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--sicily), var(--transit) 50%, var(--valais)); box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.prog .lbl { display: flex; justify-content: space-between; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 8px; }
 
-main{max-width:780px;margin:0 auto;padding:8px 20px 90px}
+/* TELEMETRY / LIVE CHIPS */
+.live { max-width: 780px; margin: 34px auto 0; padding: 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.chip { background: var(--bg-panel); border: 1px solid var(--line-dim); border-radius: var(--radius); padding: 14px; text-align: left; position: relative; border-left: 3px solid var(--line-bright); transition: all 0.3s; }
+.chip:hover { background: var(--bg-panel-hover); border-color: var(--line-bright); }
+.chip .place { font-family: var(--hud-font); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--coyote); }
+.chip .clock { font-size: 1.4rem; font-weight: 700; margin: 4px 0; color: var(--text-main); }
+.chip .wx { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-dim); }
+.chip .wx .hi { color: var(--text-main); font-weight: 700; }
+.chip .sun { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
-/* TODAY MODULE */
-#todayCard{margin-top:26px;background:linear-gradient(140deg,#fff,var(--paper));border:1px solid var(--amber);border-radius:var(--radius);padding:20px;box-shadow:0 4px 15px rgba(223,154,46,.1)}
-#todayCard .tlabel{font-family:'IBM Plex Mono';font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);font-weight:600}
-#todayCard h2{font-size:1.8rem;margin:4px 0 10px;color:var(--ink)}
-#todayCard .row{display:flex;gap:16px;padding:8px 0;border-bottom:1px dashed var(--line);align-items:baseline}
-#todayCard .row:last-child{border-bottom:0}
-#todayCard .row .t{font-family:'IBM Plex Mono';font-size:.88rem;font-weight:600;color:var(--ink);white-space:nowrap;min-width:74px}
-#todayCard .row .d{font-size:.95rem;color:#3C443F}
+/* CHIP THEATER COLORS */
+.chip:nth-child(1) { border-left-color: var(--transit); }
+.chip:nth-child(2) { border-left-color: var(--sicily); }
+.chip:nth-child(3) { border-left-color: var(--valais); }
+
+main { max-width: 780px; margin: 0 auto; padding: 16px 20px 90px; }
+
+/* TODAY HUD */
+#todayCard { margin-top: 30px; background: rgba(19, 26, 23, 0.8); border: 1px solid var(--valais); border-radius: var(--radius); padding: 24px; box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.05), 0 0 15px rgba(0, 255, 136, 0.1); position: relative; }
+#todayCard::before { content: 'ACTIVE PROTOCOL'; position: absolute; top: -9px; left: 20px; background: var(--bg-core); padding: 0 10px; font-size: 0.7rem; color: var(--valais); font-weight: 700; letter-spacing: 0.2em; text-shadow: 0 0 8px rgba(0,255,136,0.5); }
+#todayCard h2 { font-size: 2rem; margin: 8px 0 16px; color: var(--text-main); text-shadow: 0 0 10px rgba(216, 226, 220, 0.2); }
+#todayCard .row { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px dashed var(--line-dim); align-items: baseline; }
+#todayCard .row:last-child { border-bottom: 0; padding-bottom: 0; }
+#todayCard .row .t { font-size: 0.9rem; font-weight: 700; color: var(--valais); white-space: nowrap; min-width: 74px; }
+#todayCard .row .d { font-size: 0.95rem; color: var(--text-main); }
 
 /* SECTIONS (Dynamic Generation) */
-.chapter{margin-top:26px}
-details.acc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 10px rgba(28,36,38,.04);transition:all 0.3s ease}
-details.acc+details.acc{margin-top:14px}
-summary.chead{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 18px;font-size:1.2rem;font-weight:700;user-select:none}
-summary.chead::-webkit-details-marker{display:none}
-summary.chead .tag{font-family:'IBM Plex Mono';font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:999px;color:#fff}
-.sic-t{background:var(--sea)}.swi-t{background:var(--alp)}.swap-t{background:var(--amber);color:var(--ink)!important}.ops-t{background:var(--pine)}
-summary.chead .chev{margin-left:auto;transition:transform .3s ease;color:#8A8272;font-size:.85rem}
-details[open]>summary .chev{transform:rotate(180deg)}
-summary.chead .now-pill{font-family:'IBM Plex Mono';font-size:.62rem;background:var(--pine);color:#fff;padding:2px 8px;border-radius:99px;letter-spacing:.08em}
+.chapter { margin-top: 24px; }
+details.acc { background: var(--bg-panel); border: 1px solid var(--line-dim); border-radius: var(--radius); overflow: hidden; transition: all 0.3s ease; }
+details.acc:hover { border-color: var(--line-bright); }
+details.acc + details.acc { margin-top: 12px; }
+summary.chead { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 16px 20px; font-size: 1.3rem; user-select: none; color: var(--text-main); }
+summary.chead::-webkit-details-marker { display: none; }
+summary.chead .tag { font-family: var(--data-font); font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.15em; color: var(--bg-core); }
 
-.acc-body{padding:4px 18px 18px;border-top:1px dashed var(--line);animation: slideDown 0.3s ease-out forwards; transform-origin: top;}
-@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+/* TAG COLORS */
+.sic-t { background: var(--sicily); box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+.swi-t { background: var(--valais); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
+.swap-t { background: var(--transit); box-shadow: 0 0 10px rgba(255, 94, 0, 0.4); }
+.ops-t { background: var(--coyote); }
 
-.leg{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line)}
-.leg:last-of-type{border-bottom:0}
-.leg .t{font-family:'IBM Plex Mono';font-size:.85rem;white-space:nowrap;font-weight:600}
-.leg .d{font-size:.92rem;color:#3C443F}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:.9rem;margin:10px 0}
-.kv dt{color:#8A8272;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;padding-top:2px;font-family:'IBM Plex Mono'}
-.kv dd{font-weight:500}
-.conf{display:inline-block;font-family:'IBM Plex Mono';font-weight:600;font-size:.84rem;background:var(--amber-soft);border-radius:6px;padding:2px 8px;letter-spacing:.05em}
-.note{margin-top:12px;padding:10px 14px;border-radius:10px;font-size:.87rem;background:color-mix(in srgb,var(--ice) 60%,#fff);border:1px solid var(--ice)}
-.note.warn{background:#FBF1DE;border-color:#EFD9AC}
-.note b{font-weight:600}
+summary.chead .chev { margin-left: auto; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); font-size: 0.9rem; }
+details[open] > summary .chev { transform: rotate(180deg); color: var(--coyote); }
+summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); color: var(--valais); padding: 2px 8px; border-radius: 2px; letter-spacing: 0.1em; background: rgba(0,255,136,0.1); }
 
-.statusbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.statusbtns a, .statusbtns button{font-family:'IBM Plex Mono';font-size:.74rem;text-decoration:none;color:var(--sea-deep);background:transparent;border:1.5px solid var(--sea);border-radius:999px;padding:6px 12px;cursor:pointer;transition:all 0.2s}
-.statusbtns a:hover, .statusbtns button:hover{background:var(--sea);color:#fff}
-.swi-btn a, .swi-btn button{color:var(--alp-deep);border-color:var(--alp)}
-.swi-btn a:hover, .swi-btn button:hover{background:var(--alp);color:#fff}
-.fstat{font-family:'IBM Plex Mono';font-size:.72rem;letter-spacing:.05em;padding:6px 12px;border-radius:999px;border:1.5px dashed #AAB2A8;color:#5C564B;cursor:pointer;transition:all 0.2s}
-.fstat:hover{border-color:var(--ink);color:var(--ink)}
-.fstat.ok{border-color:var(--pine);color:var(--pine);border-style:solid}
-.fstat.warn{border-color:#B4432E;color:#B4432E;border-style:solid}
+.acc-body { padding: 4px 20px 20px; border-top: 1px solid var(--line-dim); animation: slideDown 0.3s ease-out forwards; transform-origin: top; background: rgba(0,0,0,0.2); }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.leg { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line-dim); }
+.leg:last-of-type { border-bottom: 0; }
+.leg .t { font-size: 0.85rem; white-space: nowrap; font-weight: 700; color: var(--coyote); min-width: 60px; }
+.leg .d { font-size: 0.9rem; color: var(--text-main); }
+.leg .d b { color: #fff; font-weight: 700; }
+
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-size: 0.9rem; margin: 16px 0; background: var(--bg-core); padding: 16px; border-radius: 4px; border-left: 2px solid var(--coyote); }
+.kv dt { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; padding-top: 2px; }
+.kv dd { font-weight: 500; color: var(--text-main); }
+
+.conf { display: inline-block; font-weight: 700; font-size: 0.8rem; background: rgba(197, 168, 128, 0.1); border: 1px solid var(--coyote); color: var(--coyote); border-radius: 3px; padding: 2px 8px; letter-spacing: 0.05em; }
+.note { margin-top: 16px; padding: 12px 16px; border-radius: 4px; font-size: 0.85rem; background: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--sicily); color: var(--text-main); }
+.note.warn { background: rgba(255, 94, 0, 0.05); border-left-color: var(--transit); }
+.note b { color: #fff; }
+
+.statusbtns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.statusbtns a, .statusbtns button { font-family: var(--data-font); font-size: 0.75rem; text-decoration: none; color: var(--sicily); background: transparent; border: 1px solid var(--sicily); border-radius: 3px; padding: 8px 14px; cursor: pointer; transition: all 0.2s; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+.statusbtns a:hover, .statusbtns button:hover { background: var(--sicily); color: var(--bg-core); box-shadow: 0 0 15px rgba(0,229,255,0.3); }
+.swi-btn a, .swi-btn button { color: var(--valais); border-color: var(--valais); }
+.swi-btn a:hover, .swi-btn button:hover { background: var(--valais); color: var(--bg-core); box-shadow: 0 0 15px rgba(0,255,136,0.3); }
+.fstat { font-size: 0.7rem; letter-spacing: 0.1em; padding: 8px 14px; border-radius: 3px; border: 1px dashed var(--line-bright); color: var(--text-muted); cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+.fstat:hover { border-color: var(--text-main); color: var(--text-main); }
+.fstat.ok { border-color: var(--valais); color: var(--valais); border-style: solid; background: rgba(0,255,136,0.05); }
+.fstat.warn { border-color: var(--transit); color: var(--transit); border-style: solid; background: rgba(255,94,0,0.05); }
 
 /* MAP */
-#map{height:420px;border-radius:12px;border:1px solid var(--line);margin-top:4px;z-index:1}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--ink);color:#fff;border:none}
-.leaflet-popup-content{font-family:'Instrument Sans';font-size:.9rem}
-.leaflet-popup-content b{font-family:'Bricolage Grotesque';font-size:1.1rem;text-transform:uppercase;color:var(--paper)}
-.mapkey{display:flex;gap:14px;flex-wrap:wrap;margin:12px 4px 0;font-family:'IBM Plex Mono';font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#8A8272}
-.mapkey i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+#map { height: 440px; border-radius: 4px; border: 1px solid var(--line-bright); margin-top: 8px; z-index: 1; filter: invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--line-bright); }
+.leaflet-popup-content { font-family: var(--data-font); font-size: 0.85rem; }
+.leaflet-popup-content b { font-family: var(--hud-font); font-size: 1.2rem; text-transform: uppercase; color: var(--coyote); letter-spacing: 0.05em; }
+.mapkey { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 4px 0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); }
+.mapkey i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; box-shadow: 0 0 8px currentColor; }
 
 /* CHECK LISTS */
-.check{list-style:none;display:flex;flex-direction:column;gap:10px;padding:14px 18px 18px}
-.check li{display:flex;gap:12px;align-items:flex-start;font-size:.93rem}
-.check .box{flex:0 0 auto;width:19px;height:19px;border-radius:6px;border:2px solid var(--sea);margin-top:2px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:#fff;font-size:.75rem;color:#fff;user-select:none;transition:all 0.15s}
-.check .box[aria-checked="true"]{background:var(--pine);border-color:var(--pine)}
-.check .box:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-.check li s{color:#9A9385}
-.subhead{font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sea-deep);padding:14px 18px 0;font-weight:600}
+.check { list-style: none; display: flex; flex-direction: column; gap: 12px; padding: 16px 20px 20px; }
+.check li { display: flex; gap: 14px; align-items: flex-start; font-size: 0.9rem; color: var(--text-main); }
+.check .box { flex: 0 0 auto; width: 18px; height: 18px; border-radius: 2px; border: 1px solid var(--line-bright); margin-top: 2px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); font-size: 0.75rem; color: transparent; user-select: none; transition: all 0.2s; }
+.check .box[aria-checked="true"] { background: rgba(0,255,136,0.1); border-color: var(--valais); color: var(--valais); text-shadow: 0 0 5px var(--valais); }
+.check .box:focus-visible { outline: 2px solid var(--transit); outline-offset: 2px; }
+.check li s { color: var(--line-bright); text-decoration-color: var(--line-bright); }
+.subhead { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--coyote); padding: 20px 20px 0; font-weight: 700; border-top: 1px solid var(--line-dim); margin-top: 10px; }
+.subhead:first-of-type { border-top: none; margin-top: 0; }
 
-footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;border-top:1px solid var(--line);margin-top:60px}
+footer { text-align: center; padding: 40px 20px 60px; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid var(--line-dim); margin-top: 60px; background: rgba(0,0,0,0.2); }
+footer .mono { letter-spacing: 0.1em; }
 </style>
 </head>
 <body>
@@ -162,38 +203,38 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
 <div id="gate" role="dialog" aria-label="Enter passcode">
   <form class="stub" id="gateForm">
     <div class="route">
-      <span class="code">SAN</span><span class="arrow">✈</span>
-      <span class="code" style="color:var(--sea)">PMO</span><span class="arrow">✈</span>
-      <span class="code" style="color:var(--alp)">GVA</span>
+      <span class="code">SAN</span><span class="arrow">▸</span>
+      <span class="code" style="color:var(--sicily); text-shadow:0 0 15px rgba(0,229,255,0.4)">PMO</span><span class="arrow">▸</span>
+      <span class="code" style="color:var(--valais); text-shadow:0 0 15px rgba(0,255,136,0.4)">GVA</span>
     </div>
     <div class="meta">Boarding · Aug 17 – 29, 2026 · Holt + Doeckel</div>
     <div class="dashed" aria-hidden="true"></div>
-    <label for="pw">Passcode</label>
-    <input id="pw" type="password" autocomplete="off" placeholder="•••••••••" aria-describedby="gateErr">
-    <button type="submit">Unlock Itinerary</button>
+    <label for="pw">Clearance Code</label>
+    <input id="pw" type="password" autocomplete="off" placeholder="[ _ _ _ _ _ _ _ ]" aria-describedby="gateErr">
+    <button type="submit">Decrypt File</button>
     <div class="err" id="gateErr" aria-live="polite"></div>
   </form>
 </div>
 
 <div id="app">
 <nav>
-  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#mapsec">Map</a><a href="#docs">Docs</a><a href="#todo">Lists</a>
+  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#mapsec">Intel Map</a><a href="#docs">Comms/Docs</a><a href="#todo">Loadout</a>
 </nav>
 
 <header class="hero">
   <div class="eyebrow">travl.holtanalytics.org</div>
-  <h1><span class="sic">Sicilia</span> → <span class="swi">Valais</span></h1>
+  <h1><span class="sic">SICILIA</span> <span class="arrow">▸</span> <span class="swi">VALAIS</span></h1>
   <div class="dates">MON AUG 17 — SAT AUG 29, 2026 · 12 NIGHTS</div>
 
   <div class="cd-wrap">
-    <div class="cd-label" id="cdLabel">Wheels up in</div>
+    <div class="cd-label" id="cdLabel">T-MINUS TO WHEELS UP</div>
     <div class="cd" id="cd">
       <div class="cell"><div class="num" id="cdD">--</div><div class="unit">days</div></div>
       <div class="cell"><div class="num" id="cdH">--</div><div class="unit">hrs</div></div>
       <div class="cell"><div class="num" id="cdM">--</div><div class="unit">min</div></div>
       <div class="cell"><div class="num" id="cdS">--</div><div class="unit">sec</div></div>
     </div>
-    <div id="cdDone">Welcome home. 🏔🌊</div>
+    <div id="cdDone">MISSION COMPLETE. WELCOME BACK.</div>
   </div>
   <div class="prog">
     <div class="bar"><div class="fill" id="progFill"></div></div>
@@ -202,15 +243,14 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
   <div class="live">
     <div class="chip"><div class="place">San Diego</div><div class="clock" id="clkSD">--:--</div><div class="wx" id="wxSD">…</div><div class="sun" id="sunSD"></div></div>
     <div class="chip"><div class="place">Trapani</div><div class="clock" id="clkTP">--:--</div><div class="wx" id="wxTP">…</div><div class="sun" id="sunTP"></div></div>
-    <div class="chip alpine"><div class="place">Champoussin</div><div class="clock" id="clkCH">--:--</div><div class="wx" id="wxCH">…</div><div class="sun" id="sunCH"></div></div>
+    <div class="chip"><div class="place">Champoussin</div><div class="clock" id="clkCH">--:--</div><div class="wx" id="wxCH">…</div><div class="sun" id="sunCH"></div></div>
   </div>
 </header>
 
 <main>
 
 <section id="today"><div id="todayCard" hidden>
-  <div class="tlabel">CURRENT OP · LIVE</div>
-  <h2 id="todayTitle"></h2>
+  <h2 id="todayTitle" class="hud-text"></h2>
   <div id="todayRows"></div>
 </div></section>
 
@@ -222,28 +262,28 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
   <summary class="chead"><span class="tag ops-t">MAP</span> Theater overview <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div id="map"></div>
-    <div class="mapkey"><span><i style="background:var(--sea)"></i>Sicily</span><span><i style="background:var(--alp)"></i>Valais</span><span><i style="background:var(--amber)"></i>Transit</span></div>
+    <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
   </div>
 </details>
 </section>
 
 <section class="chapter" id="docs">
 <details class="acc" open>
-  <summary class="chead"><span class="tag ops-t">DOCS</span> Quick access <span class="chev">▼</span></summary>
+  <summary class="chead"><span class="tag ops-t">DOCS</span> Secure Comms & Quick Access <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div class="statusbtns">
       <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=AR526H&LastName=HOLT&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (K)</a>
       <a href="https://www.swiss.com" target="_blank" rel="noopener">SWISS MANAGE</a>
       <a href="https://www.hertz.com/us/en/reservation" target="_blank" rel="noopener">HERTZ RES</a>
       <a href="https://cars.booking.com" target="_blank" rel="noopener">EUROPCAR BOOKING</a>
-      <button data-ics="ALL">⬇ FULL TRIP .ICS</button>
+      <button data-ics="ALL">⬇ D/L FULL ITINERARY .ICS</button>
     </div>
-    <dl class="kv" style="margin-top:18px">
-      <dt>Resort</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--sea-deep);text-decoration:none">+41 24 477 26 82</a></dd>
+    <dl class="kv" style="margin-top:20px">
+      <dt>Resort</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--valais);text-decoration:none">+41 24 477 26 82</a></dd>
       <dt>EU emergency</dt><dd class="mono">112 (IT + CH, all services)</dd>
       <dt>US Embassy IT</dt><dd class="mono">+39 06 46741</dd>
       <dt>US Embassy CH</dt><dd class="mono">+41 31 357 70 11</dd>
-      <dt>FX</dt><dd class="mono" id="fxRow">loading rates…</dd>
+      <dt>FX Rates</dt><dd class="mono" id="fxRow">establishing connection…</dd>
     </dl>
   </div>
 </details>
@@ -251,15 +291,15 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
 
 <section class="chapter" id="todo">
 <details class="acc" open>
-  <summary class="chead"><span class="tag swap-t">LISTS</span> Pre-flight + packing <span class="chev">▼</span></summary>
+  <summary class="chead"><span class="tag swap-t">LISTS</span> Deployment Loadout <span class="chev">▼</span></summary>
   
-  <div class="subhead">// PRE-FLIGHT</div>
+  <div class="subhead">// PRE-FLIGHT PROTOCOL</div>
   <ul class="check" data-store="travl_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>AAA run: International Driving Permit ($20 + 2 photos) — required for Italy</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Give Europcar arrival flight LX 1741 (lands ZRH 11:45)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Transmit Europcar arrival flight LX 1741 (lands ZRH 11:45)</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Add checked bags to BOTH LX refs (ACWOBL + YJPCZI) — 8 kg carry-on limit</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Check-ins: United Aug 16 ~17:15 · Swiss Aug 21 · United return Aug 28</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>CHF ~292 cash for resort fees, or card it</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Procure CHF ~292 cash for resort fees, or verify card payment</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Physical Amex + both licenses; extra driver present at ZRH counter</span></li>
   </ul>
   
@@ -270,18 +310,18 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>70-200mm telephoto + custom padded sleeve (Matterhorn punch-ins)</span></li>
   </ul>
 
-  <div class="subhead">// CLIMB KIT</div>
+  <div class="subhead">// CLIMB KIT (SICILY)</div>
   <ul class="check" data-store="travl_pk_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Rope (70m) + draws ×12 + harnesses + belay device</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Climbing shoes + chalk bags + tape</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>DWS: quick-dry shorts, water shoes, dry bag for phone</span></li>
   </ul>
 
-  <div class="subhead">// HIKE KIT</div>
+  <div class="subhead">// HIKE KIT (VALAIS)</div>
   <ul class="check" data-store="travl_hk_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Boots + trail runners + poles</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Layers: shell, fleece, sun hoody — alpine mornings are cold in August</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>2L water capacity + snacks + small first aid</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>2L water capacity + MRE/snacks + small first aid</span></li>
   </ul>
 </details>
 </section>
@@ -289,7 +329,7 @@ footer{text-align:center;padding:34px 20px 44px;color:#8A8272;font-size:.8rem;bo
 </main>
 <footer>
   <div class="mono">SICILIA ▸ VALAIS · A HOLT PRODUCTION</div>
-  <div class="mono" style="font-size:.72rem;margin-top:4px">weather open-meteo · maps cartodb · lists save locally</div>
+  <div class="mono" style="margin-top:8px; color:var(--line-bright);">weather: open-meteo · maps: cartodb · state: local storage</div>
 </footer>
 </div>
 
@@ -393,16 +433,13 @@ const ITINERARY_DATA = [
 
 function renderItinerary() {
   let container = document.getElementById('itinerary-container');
-  
-  // Failsafe: If the container is missing from the HTML, generate it dynamically.
   if (!container) {
     container = document.createElement('div');
     container.id = 'itinerary-container';
     const mapSec = document.getElementById('mapsec');
     if (mapSec) mapSec.parentNode.insertBefore(container, mapSec);
   }
-  
-  if (!container) return; // Ultimate failsafe
+  if (!container) return; 
   
   let html = '';
   ITINERARY_DATA.forEach(sec => {
@@ -443,7 +480,7 @@ document.getElementById('gateForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const v=document.getElementById('pw').value.trim().toLowerCase();
   if(await sha(v)===HASH){sessionStorage.setItem('travl_ok','1');unlock();}
-  else{document.getElementById('gateErr').textContent='Negative — check with Keegan.';document.getElementById('pw').select();}
+  else{document.getElementById('gateErr').textContent='ACCESS DENIED. VERIFY CLEARANCE.';document.getElementById('pw').select();}
 });
 
 /* MILESTONES */
@@ -457,7 +494,7 @@ const M=[
 ];
 const TRIP_START=M[0].t, TRIP_END=M[5].t;
 
-/* TODAY AGENDA (dates in local trip tz) */
+/* TODAY AGENDA */
 const AGENDA={
  '2026-08-17':{tz:'America/Los_Angeles',title:'Insertion · SAN',rows:[['17:15','UA 8932 departs SAN — be at airport by 14:15']]},
  '2026-08-18':{tz:'Europe/Rome',title:'Arrival · Sicily',rows:[['13:25','Land Munich (connection 1h55)'],['15:20','LH 1916 departs MUC'],['17:20','Land Palermo'],['18:30','Hertz pickup'],['~19:30','Arrive Trapani base']]},
@@ -522,7 +559,7 @@ function tick(){
 }
 
 /* WEATHER + SUN */
-const WMO={0:'☀ clear',1:'🌤 fair',2:'⛅ pt cloudy',3:'☁ overcast',45:'🌫 fog',48:'🌫 fog',51:'🌦 drizzle',53:'🌦 drizzle',55:'🌧 drizzle',61:'🌧 rain',63:'🌧 rain',65:'🌧 hvy rain',71:'🌨 snow',73:'🌨 snow',75:'❄ hvy snow',80:'🌦 showers',81:'🌧 showers',82:'⛈ hvy shwrs',95:'⛈ t-storm',96:'⛈ hail',99:'⛈ hail'};
+const WMO={0:'☀ CLR',1:'🌤 FAIR',2:'⛅ P-CLDY',3:'☁ OVC',45:'🌫 FOG',48:'🌫 FOG',51:'🌦 DRZL',53:'🌦 DRZL',55:'🌧 DRZL',61:'🌧 RAIN',63:'🌧 RAIN',65:'🌧 H-RAIN',71:'🌨 SNOW',73:'🌨 SNOW',75:'❄ H-SNOW',80:'🌦 SHWR',81:'🌧 SHWR',82:'⛈ H-SHWR',95:'⛈ T-STRM',96:'⛈ HAIL',99:'⛈ HAIL'};
 async function wx(lat,lon,tz,el,sunEl){
   if(!el) return;
   try{
@@ -533,9 +570,9 @@ async function wx(lat,lon,tz,el,sunEl){
     el.innerHTML=`${WMO[code]||'—'} <span class="hi">${c}°C</span> · ${lo}–${hi}°`;
     if(sunEl) {
       const sr=j.daily.sunrise[0].slice(11,16),ss=j.daily.sunset[0].slice(11,16);
-      sunEl.textContent=`☉ ${sr} — ${ss}`;
+      sunEl.textContent=`☉ ${sr} / ${ss}`;
     }
-  }catch(e){el.textContent='wx offline';}
+  }catch(e){el.textContent='TELEMETRY OFFLINE';}
 }
 async function fx(){
   const fxRow = document.getElementById('fxRow');
@@ -543,21 +580,21 @@ async function fx(){
   try{
     const r=await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,CHF');const j=await r.json();
     fxRow.textContent=`$1 = €${j.rates.EUR.toFixed(2)} · CHF ${j.rates.CHF.toFixed(2)}`;
-  }catch(e){fxRow.textContent='rates offline';}
+  }catch(e){fxRow.textContent='RATES OFFLINE';}
 }
 
-/* MAP RE-INTEGRATION (Light Theme CartoDB Tiles) */
+/* MAP RE-INTEGRATION (Tactical Invert) */
 function buildMap(){
   const mapEl = document.getElementById('map');
   if (!mapEl || typeof L === 'undefined') return;
   const map=L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
-  // Removed the rogue '{r}' retina tag that causes 404s on CartoDB servers
+  // Using light tiles, but heavily inverted in CSS to create a tactical radar look
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap, &copy; CartoDB'}).addTo(map);
   
-  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:7,color,weight:2,fillColor:color,fillOpacity:1}).addTo(map).bindPopup(`<b>${title}</b><br>${body}`);
-  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sea').trim() || '#0E7C86';
-  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--alp').trim() || '#3E5C76';
-  const AMB=getComputedStyle(document.documentElement).getPropertyValue('--amber').trim() || '#DF9A2E';
+  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1}).addTo(map).bindPopup(`<b>${title}</b><br>${body}`);
+  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sicily').trim() || '#00E5FF';
+  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--valais').trim() || '#00FF88';
+  const AMB=getComputedStyle(document.documentElement).getPropertyValue('--transit').trim() || '#FF5E00';
   
   mk(32.7338,-117.1933,AMB,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
   mk(38.1760,13.0910,AMB,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
@@ -625,20 +662,20 @@ async function loadStatus(el,force){
   const f=el.dataset.f,d=el.dataset.d,dep=Date.parse(DEPS[f]);
   const inWindow=Date.now()>dep-48*3600e3&&Date.now()<dep+24*3600e3;
   if(!inWindow&&!force){el.textContent=f+' · status opens T-48h';return;}
-  el.textContent=f+' · checking…';
+  el.textContent=f+' · PINGING...';
   try{
     const r=await fetch(`/api/flights?flight=${f}&date=${d}`);
-    if(r.status===501){el.textContent=f+' · status offline (no key)';return;}
+    if(r.status===501){el.textContent=f+' · OFFLINE';return;}
     if(!r.ok)throw 0;
     const j=await r.json();
     const st=(j.status||'scheduled').toUpperCase();
-    const gate=j.dep.gate?' · GATE '+j.dep.gate:'';
+    const gate=j.dep.gate?' · G '+j.dep.gate:'';
     const term=j.dep.terminal?' · T'+j.dep.terminal:'';
     const rev=j.dep.rev&&j.dep.rev!==j.dep.sched?' · NEW '+j.dep.rev.slice(11,16):'';
     el.textContent=`${f} · ${st}${term}${gate}${rev}`;
     el.classList.remove('ok','warn');
     el.classList.add(/DELAY|CANCEL|DIVERT/i.test(st)||rev?'warn':'ok');
-  }catch(e){el.textContent=f+' · status unavailable';}
+  }catch(e){el.textContent=f+' · NO SIGNAL';}
 }
 function statusBoot(){
   document.querySelectorAll('.fstat').forEach(el=>{
@@ -652,7 +689,6 @@ let booted=false;
 function boot(){
   if(booted)return;booted=true;
   
-  // Wrapped in Failsafes: If one component errors out, the rest of the dashboard stays online.
   try { renderItinerary(); } catch(e) { console.error('Itinerary Error:', e); }
   try { tick(); setInterval(tick,1000); } catch(e) { console.error('Clock Error:', e); }
   try { renderToday(); setInterval(renderToday,60000); } catch(e) { console.error('Today Error:', e); }
