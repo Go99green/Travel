@@ -1,4 +1,4 @@
-const CACHE='travl-v4';
+const CACHE='travl-v5';
 const SHELL=['/','/index.html','/manifest.json','/icon-192.png','/icon-512.png'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
@@ -8,9 +8,10 @@ self.addEventListener('activate',e=>{
 });
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
+  // never cache the API
   if(url.pathname.startsWith('/api/')){e.respondWith(fetch(e.request));return;}
+  // app shell: network-first so updates land, cache = offline mode
   if(e.request.mode==='navigate'||url.pathname==='/index.html'){
-    // network-first for the app itself so updates land; cached copy = offline mode
     e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(c=>c.put('/index.html',cp));return r;}).catch(()=>caches.match('/index.html')));
     return;
   }
@@ -18,6 +19,6 @@ self.addEventListener('fetch',e=>{
     e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(c=>c.put(e.request,cp));return r;})));
     return;
   }
-  // cross-origin (fonts, tiles, weather): try network, fall back to cache if we have it
+  // cross-origin (fonts, map tiles, weather): cache-on-success, serve stale offline
   e.respondWith(fetch(e.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(c=>c.put(e.request,cp)).catch(()=>{});return r;}).catch(()=>caches.match(e.request)));
 });

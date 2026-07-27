@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0B0F0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>travl · SICILIA → VALAIS · OPS AUG 2026</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -19,10 +21,10 @@
   --bg-panel-hover: #19231F;
   --line-dim: #22302A;
   --line-bright: #3A4E45;
-  
+
   --text-main: #D8E2DC;
   --text-muted: #6D857A;
-  
+
   --coyote: #C5A880;
   --sicily: #00E5FF;
   --valais: #00FF88;
@@ -41,7 +43,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--data-font);
   background: var(--bg-core);
-  background-image: 
+  background-image:
     linear-gradient(rgba(34, 48, 42, 0.3) 1px, transparent 1px),
     linear-gradient(90deg, rgba(34, 48, 42, 0.3) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -59,7 +61,9 @@ h1, h2, h3, .hud-text { font-family: var(--hud-font); text-transform: uppercase;
 .stub .route { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
 .stub .code { font-family: var(--hud-font); font-weight: 700; font-size: 2.4rem; color: var(--text-main); }
 .stub .arrow { color: var(--line-bright); font-size: 1.2rem; }
-.stub .meta { font-size: 0.7rem; color: var(--coyote); letter-spacing: 0.1em; margin-bottom: 24px; text-transform: uppercase; }
+.stub .meta { font-size: 0.7rem; color: var(--coyote); letter-spacing: 0.1em; margin-bottom: 4px; text-transform: uppercase; }
+.stub .dashed { border-top: 1px dashed var(--line-bright); margin: 20px -32px 20px; }
+.stub label { display: block; font-family: var(--hud-font); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
 .stub input { width: 100%; font-family: var(--data-font); font-size: 1.2rem; padding: 14px; border: 1px solid var(--line-bright); border-radius: 4px; background: rgba(0,0,0,0.5); color: var(--valais); letter-spacing: 0.2em; text-align: center; transition: all 0.2s; }
 .stub input:focus { outline: none; border-color: var(--sicily); box-shadow: 0 0 15px rgba(0,229,255,0.2); }
 .stub input::placeholder { color: var(--line-bright); }
@@ -68,6 +72,13 @@ h1, h2, h3, .hud-text { font-family: var(--hud-font); text-transform: uppercase;
 .stub .err { color: var(--danger); font-size: 0.8rem; margin-top: 12px; min-height: 1.2em; text-align: center; }
 
 #app { display: none; }
+
+/* SYSTEM BADGES */
+#sysbar { position: fixed; right: 12px; bottom: 12px; z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+#offlineBadge { display: none; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 12px; border-radius: 3px; background: rgba(255,42,42,0.12); border: 1px solid var(--danger); color: var(--danger); }
+#offlineBadge.on { display: block; }
+#installBtn { font-family: var(--data-font); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 14px; border-radius: 3px; background: rgba(197,168,128,0.1); border: 1px solid var(--coyote); color: var(--coyote); cursor: pointer; }
+#installBtn:hover { background: var(--coyote); color: var(--bg-core); }
 
 /* STICKY NAV */
 nav { position: sticky; top: 0; z-index: 40; background: rgba(11, 15, 13, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line-dim); display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px; scrollbar-width: none; }
@@ -109,7 +120,6 @@ header.hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0;
 .chip .wx { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-dim); }
 .chip .wx .hi { color: var(--text-main); font-weight: 700; }
 .chip .sun { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
-
 .chip:nth-child(1) { border-left-color: var(--transit); }
 .chip:nth-child(2) { border-left-color: var(--sicily); }
 .chip:nth-child(3) { border-left-color: var(--valais); }
@@ -133,12 +143,10 @@ details.acc + details.acc { margin-top: 12px; }
 summary.chead { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 16px 20px; font-size: 1.3rem; user-select: none; color: var(--text-main); }
 summary.chead::-webkit-details-marker { display: none; }
 summary.chead .tag { font-family: var(--data-font); font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 2px; letter-spacing: 0.15em; color: var(--bg-core); }
-
 .sic-t { background: var(--sicily); box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
 .swi-t { background: var(--valais); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
 .swap-t { background: var(--transit); box-shadow: 0 0 10px rgba(255, 94, 0, 0.4); }
 .ops-t { background: var(--coyote); }
-
 summary.chead .chev { margin-left: auto; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); font-size: 0.9rem; }
 details[open] > summary .chev { transform: rotate(180deg); color: var(--coyote); }
 summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); color: var(--valais); padding: 2px 8px; border-radius: 2px; letter-spacing: 0.1em; background: rgba(0,255,136,0.1); }
@@ -146,17 +154,25 @@ summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); c
 .acc-body { padding: 4px 20px 20px; border-top: 1px solid var(--line-dim); animation: slideDown 0.3s ease-out forwards; transform-origin: top; background: rgba(0,0,0,0.2); }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-.leg { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line-dim); }
+.leg { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line-dim); flex-wrap: wrap; }
 .leg:last-of-type { border-bottom: 0; }
 .leg .t { font-size: 0.85rem; white-space: nowrap; font-weight: 700; color: var(--coyote); min-width: 60px; }
-.leg .d { font-size: 0.9rem; color: var(--text-main); }
+.leg .d { font-size: 0.9rem; color: var(--text-main); flex: 1; min-width: 200px; }
 .leg .d b { color: #fff; font-weight: 700; }
+.leg .stats { display: block; margin-top: 5px; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.06em; }
+.leg .stats span { margin-right: 12px; }
+.leg .stats b { color: var(--text-muted); font-weight: 700; }
+.navlink { display: inline-block; margin-top: 6px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--text-muted); border: 1px solid var(--line-bright); border-radius: 3px; padding: 3px 9px; transition: all 0.2s; }
+.navlink:hover { color: var(--coyote); border-color: var(--coyote); }
 
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-size: 0.9rem; margin: 16px 0; background: var(--bg-core); padding: 16px; border-radius: 4px; border-left: 2px solid var(--coyote); }
 .kv dt { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; padding-top: 2px; }
 .kv dd { font-weight: 500; color: var(--text-main); }
 
-.conf { display: inline-block; font-weight: 700; font-size: 0.8rem; background: rgba(197, 168, 128, 0.1); border: 1px solid var(--coyote); color: var(--coyote); border-radius: 3px; padding: 2px 8px; letter-spacing: 0.05em; }
+.conf { display: inline-block; font-weight: 700; font-size: 0.8rem; background: rgba(197, 168, 128, 0.1); border: 1px solid var(--coyote); color: var(--coyote); border-radius: 3px; padding: 2px 8px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; }
+.conf:hover { background: rgba(197,168,128,0.25); }
+.conf.copied { background: var(--valais); border-color: var(--valais); color: var(--bg-core); }
+
 .note { margin-top: 16px; padding: 12px 16px; border-radius: 4px; font-size: 0.85rem; background: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--sicily); color: var(--text-main); }
 .note.warn { background: rgba(255, 94, 0, 0.05); border-left-color: var(--transit); }
 .note b { color: #fff; }
@@ -170,14 +186,17 @@ summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); c
 .fstat:hover { border-color: var(--text-main); color: var(--text-main); }
 .fstat.ok { border-color: var(--valais); color: var(--valais); border-style: solid; background: rgba(0,255,136,0.05); }
 .fstat.warn { border-color: var(--transit); color: var(--transit); border-style: solid; background: rgba(255,94,0,0.05); }
+.fstat.dead { border-color: var(--line-dim); color: var(--line-bright); }
 
-/* MAP */
-#map { height: 440px; border-radius: 4px; border: 1px solid var(--line-bright); margin-top: 8px; z-index: 1; }
-.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--line-bright); }
-.leaflet-popup-content { font-family: var(--data-font); font-size: 0.85rem; }
-.leaflet-popup-content b { font-family: var(--hud-font); font-size: 1.2rem; text-transform: uppercase; color: var(--coyote); letter-spacing: 0.05em; }
-.mapkey { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 4px 0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); }
-.mapkey i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; box-shadow: 0 0 8px currentColor; }
+/* FORECAST */
+.fc-group { margin-top: 14px; }
+.fc-group:first-child { margin-top: 4px; }
+.fc-title { font-family: var(--hud-font); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 6px; }
+.fc-row { display: flex; gap: 16px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--line-dim); }
+.fc-row:last-child { border-bottom: 0; }
+.fc-row .t { font-size: 0.8rem; font-weight: 700; color: var(--coyote); min-width: 60px; }
+.fc-row .d { font-size: 0.82rem; color: var(--text-main); }
+.fc-note { font-size: 0.82rem; color: var(--text-muted); padding: 8px 0; }
 
 /* CHECK LISTS */
 .check { list-style: none; display: flex; flex-direction: column; gap: 12px; padding: 16px 20px 20px; }
@@ -186,8 +205,10 @@ summary.chead .now-pill { font-size: 0.65rem; border: 1px solid var(--valais); c
 .check .box[aria-checked="true"] { background: rgba(0,255,136,0.1); border-color: var(--valais); color: var(--valais); text-shadow: 0 0 5px var(--valais); }
 .check .box:focus-visible { outline: 2px solid var(--transit); outline-offset: 2px; }
 .check li s { color: var(--line-bright); text-decoration-color: var(--line-bright); }
-.subhead { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--coyote); padding: 20px 20px 0; font-weight: 700; border-top: 1px solid var(--line-dim); margin-top: 10px; }
+.subhead { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--coyote); padding: 20px 20px 0; font-weight: 700; border-top: 1px solid var(--line-dim); margin-top: 10px; display: flex; justify-content: space-between; align-items: baseline; }
 .subhead:first-of-type { border-top: none; margin-top: 0; }
+.subhead .cnt { color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; }
+.subhead .cnt.done { color: var(--valais); }
 
 footer { text-align: center; padding: 40px 20px 60px; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid var(--line-dim); margin-top: 60px; background: rgba(0,0,0,0.2); }
 footer .mono { letter-spacing: 0.1em; }
@@ -213,7 +234,7 @@ footer .mono { letter-spacing: 0.1em; }
 
 <div id="app">
 <nav>
-  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#mapsec">Intel Map</a><a href="#docs">Comms/Docs</a><a href="#todo">Keegan Loadout</a>
+  <a href="#today">Today</a><a href="#itinerary-container">Timeline</a><a href="#forecast">Forecast</a><a href="#mapsec">Intel Map</a><a href="#docs">Comms/Docs</a><a href="#todo">Loadout</a>
 </nav>
 
 <header class="hero">
@@ -252,19 +273,26 @@ footer .mono { letter-spacing: 0.1em; }
 <!-- DYNAMIC ITINERARY CONTAINER -->
 <div id="itinerary-container"></div>
 
+<section class="chapter" id="forecast">
+<details class="acc">
+  <summary class="chead"><span class="tag ops-t">WX</span> Trip-window forecast <span class="chev">▼</span></summary>
+  <div class="acc-body"><div id="fcRows"><div class="fc-note">Standby — querying…</div></div></div>
+</details>
+</section>
+
 <section class="chapter" id="mapsec">
 <details class="acc" open>
   <summary class="chead"><span class="tag ops-t">MAP</span> Theater overview <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div id="map"></div>
-    <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily (DWS & Chilling)</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais (Alpine Hikes)</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
+    <div class="mapkey"><span style="color:var(--sicily)"><i style="background:var(--sicily)"></i>Sicily (DWS &amp; Chilling)</span><span style="color:var(--valais)"><i style="background:var(--valais)"></i>Valais (Alpine Hikes)</span><span style="color:var(--transit)"><i style="background:var(--transit)"></i>Transit</span></div>
   </div>
 </details>
 </section>
 
 <section class="chapter" id="docs">
 <details class="acc" open>
-  <summary class="chead"><span class="tag ops-t">DOCS</span> Personnel Refs & Secure Comms <span class="chev">▼</span></summary>
+  <summary class="chead"><span class="tag ops-t">DOCS</span> Personnel Refs &amp; Secure Comms <span class="chev">▼</span></summary>
   <div class="acc-body">
     <div class="statusbtns">
       <a href="https://www.united.com/travel/checkin/quickstart.aspx?irPNR=AR526H&LastName=HOLT&LangCode=en-us" target="_blank" rel="noopener">UNITED CHECK-IN (KEEGAN)</a>
@@ -279,10 +307,12 @@ footer .mono { letter-spacing: 0.1em; }
       <dt>Resort Contact</dt><dd class="mono"><a href="tel:+41244772682" style="color:var(--valais);text-decoration:none">+41 24 477 26 82</a></dd>
       <dt>Drivers</dt><dd>Keegan Holt (Hertz Primary) · Will Doeckel (Europcar Primary)</dd>
       <dt>EU emergency</dt><dd class="mono">112 (IT + CH, all services)</dd>
+      <dt>Alpine rescue CH</dt><dd class="mono"><a href="tel:1414" style="color:var(--valais);text-decoration:none">1414</a> (Rega air rescue)</dd>
       <dt>US Embassy IT</dt><dd class="mono">+39 06 46741</dd>
       <dt>US Embassy CH</dt><dd class="mono">+41 31 357 70 11</dd>
       <dt>FX Rates</dt><dd class="mono" id="fxRow">establishing connection…</dd>
     </dl>
+    <p class="note">Tap any <span class="conf">REF CODE</span> anywhere on this page to copy it to your clipboard — built for rental counters and check-in desks.</p>
   </div>
 </details>
 </section>
@@ -290,8 +320,8 @@ footer .mono { letter-spacing: 0.1em; }
 <section class="chapter" id="todo">
 <details class="acc" open>
   <summary class="chead"><span class="tag swap-t">LISTS</span> Keegan's 2-Week Adventure Pack List <span class="chev">▼</span></summary>
-  
-  <div class="subhead">// PRE-FLIGHT PROTOCOL</div>
+
+  <div class="subhead">// PRE-FLIGHT PROTOCOL <span class="cnt"></span></div>
   <ul class="check" data-store="travl_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>AAA run: International Driving Permit ($20 + 2 photos) — required for Italy</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Transmit Europcar arrival flight LX 1741 (lands ZRH 11:45)</span></li>
@@ -299,24 +329,28 @@ footer .mono { letter-spacing: 0.1em; }
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Check-ins: United Aug 16 ~17:15 · Swiss Aug 21 · United return Aug 28</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Procure CHF ~292 cash for resort fees, or verify card payment</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Physical Amex + both licenses; extra driver present at ZRH counter</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Download offline maps for Sicily + Valais in Google Maps before departure</span></li>
   </ul>
-  
-  <div class="subhead">// CARRY & HARDWARE</div>
+
+  <div class="subhead">// CARRY &amp; HARDWARE <span class="cnt"></span></div>
   <ul class="check" data-store="travl_tech_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Mystery Ranch bag for EDC</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Laptop + Chargers + SD cards + Earbuds</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sony body + Zeiss 55mm f/1.8 + 70-200mm telephoto (Pelican case & padded sleeves)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sony body + Zeiss 55mm f/1.8 + 70-200mm telephoto (Pelican case &amp; padded sleeves)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>EU Type-C/F plug adapters (Italy also uses Type-L — bring both) + power bank</span></li>
   </ul>
 
-  <div class="subhead">// CLOTHING & OUTDOOR GEAR</div>
+  <div class="subhead">// CLOTHING &amp; OUTDOOR GEAR <span class="cnt"></span></div>
   <ul class="check" data-store="travl_gear_c">
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>5 days of clothes (washing mid-trip)</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Shorts & Hiking pants</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Hiking shoes & Darn Tough socks</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sun hoodies & Arc'teryx layers</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Shorts &amp; Hiking pants</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Hiking shoes &amp; Darn Tough socks</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Sun hoodies &amp; Arc'teryx layers</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Hammock</span></li>
     <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Headbands, Hat, Sunglasses</span></li>
-    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Nalgene bottle & Salt packets</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Nalgene bottle &amp; Salt packets</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Water shoes + quick-dry shorts + dry bag (DWS days)</span></li>
+    <li><span class="box" role="checkbox" tabindex="0" aria-checked="false"></span><span>Rain shell — Valais afternoons build storms fast in August</span></li>
   </ul>
 </details>
 </section>
@@ -324,8 +358,13 @@ footer .mono { letter-spacing: 0.1em; }
 </main>
 <footer>
   <div class="mono">SICILIA ▸ VALAIS · A HOLT PRODUCTION</div>
-  <div class="mono" style="margin-top:8px; color:var(--line-bright);">weather: open-meteo · maps: cartodb dark matter · state: local storage</div>
+  <div class="mono" style="margin-top:8px; color:var(--line-bright);">weather: open-meteo · maps: cartodb dark matter · state: local storage · installable pwa</div>
 </footer>
+
+<div id="sysbar">
+  <div id="offlineBadge">◉ OFFLINE — CACHED BRIEF</div>
+  <button id="installBtn" hidden>⬇ INSTALL APP</button>
+</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -339,10 +378,10 @@ const ITINERARY_DATA = [
       { t: '13:25 +1', d: 'Land Munich · connection 1h55' },
       { t: '15:20', d: '<b>LH 1916</b> MUC ▸ PMO · A321neo · 2h · seats unassigned' },
       { t: '17:20', d: 'Land Palermo' },
-      { t: '18:30', d: '<b>Hertz pickup</b> PMO · <span class="conf">L662E040086</span> · Jeep Avenger class · $312.42' },
-      { t: '~19:30', d: 'Arrive Trapani base' }
+      { t: '18:30', d: '<b>Hertz pickup</b> PMO · <span class="conf">L662E040086</span> · Jeep Avenger class · $312.42', nav: '38.1760,13.0910' },
+      { t: '~19:30', d: 'Arrive Trapani base', nav: '38.0175,12.5449' }
     ],
-    kvs: [ 
+    kvs: [
       { k: 'United Keegan', v: '<span class="conf">AR526H</span>' },
       { k: 'United Will', v: '<span class="conf">ASGTLJ</span>' }
     ],
@@ -365,22 +404,25 @@ const ITINERARY_DATA = [
       { k: 'Comms', v: 'Kindred Concierge + John Francis (in-app)' }
     ],
     legs: [
-      { t: '40 min', d: '<b>San Vito Lo Capo</b> — deep water soloing on limestone over turquoise sea + beach chill' },
-      { t: '50 min', d: '<b>Zingaro Reserve</b> — deep water solo spots, sea caves, swimming coves' },
-      { t: '10 min', d: '<b>Erice</b> — medieval mountain streets, Maria Grammatico pastries, coastal views' },
-      { t: '15 min', d: '<b>Salt Pans & Eats</b> — sunset watch, windmills, Trapani couscous & fresh seafood' }
+      { t: '40 min', d: '<b>San Vito Lo Capo</b> — limestone over turquoise sea; sport crags inland, DWS on the sea-facing walls + beach chill',
+        stats: '<span><b>BEST</b> early AM — glassy water, shade on the east faces</span><span><b>NOTE</b> September is festival season; August is quieter on rock, busier on sand</span>', nav: '38.1740,12.7350' },
+      { t: '50 min', d: '<b>Zingaro Reserve</b> — DWS spots, sea caves, swimming coves; park at the south (Scopello) gate',
+        stats: '<span><b>ACCESS</b> paid entry, no road inside — everything is on foot</span><span><b>CARRY</b> all water in; no shops past the gate</span>', nav: '38.1120,12.8000' },
+      { t: '10 min', d: '<b>Erice</b> — medieval mountain streets, Maria Grammatico pastries, coastal views', stats: '<span><b>UP</b> Funivia cable car from Trapani</span><span><b>WEAR</b> real shoes — the streets are polished stone</span>', nav: '38.0372,12.5865' },
+      { t: '15 min', d: '<b>Salt Pans &amp; Eats</b> — sunset watch, windmills, Trapani couscous &amp; fresh seafood', nav: '37.9910,12.5030' }
     ],
+    notes: [ { text: '<b>DWS discipline:</b> scout the landing zone at the tide you\'ll actually fall at, go feet-first, and never solo above rock shelves. Water shoes for the approach — the limestone is sharp.' } ],
     actions: [ { ics: 'kindred', label: '+ CAL CHECK-IN' } ]
   },
   {
     phase: 2, tag: 'SAT AUG 22', tagClass: 'swap-t', title: 'Swap Day (Italy → Switzerland)',
     legs: [
       { t: '06:15', d: 'Depart base — packed the night prior' },
-      { t: '07:30', d: 'Hertz return PMO (desk opens 07:30)' },
+      { t: '07:30', d: 'Hertz return PMO (desk opens 07:30)', nav: '38.1760,13.0910' },
       { t: '09:45', d: '<b>LX 1741</b> PMO ▸ ZRH · Keegan: <span class="conf">ACWOBL</span> · Will: <span class="conf">YJPCZI</span> · Air Baltic A220' },
       { t: '11:45', d: 'Land Zurich' },
-      { t: '12:30', d: '<b>Europcar pickup</b> ZRH · <span class="conf">746398455</span> · VW Polo auto' },
-      { t: '~15:30', d: 'Arrive Champoussin — reception closes 18:00' }
+      { t: '12:30', d: '<b>Europcar pickup</b> ZRH · <span class="conf">746398455</span> · VW Polo auto', nav: '47.4581,8.5555' },
+      { t: '~15:30', d: 'Arrive Champoussin — reception closes 18:00', nav: '46.2000,6.8690' }
     ],
     notes: [
       { text: '<b>Counter:</b> CHF 125.03 due (one-way + extra driver — both Keegan and Will present with licenses). Vignette included; decline winter add-ons.', warn: true },
@@ -401,12 +443,18 @@ const ITINERARY_DATA = [
     ],
     notes: [ { text: '<b>Pay at check-in:</b> ~292 CHF total for two (utilities, tourist tax, deposit imprint).', warn: true } ],
     legs: [
-      { t: '45 min', d: '<b>Lac de Salanfe</b> — pristine alpine lake hike right under the Dents du Midi peaks' },
-      { t: '40 min', d: '<b>Lac de Taney</b> — trailhead at Le Flon, stunning mountain lake trek & panorama views' },
-      { t: '60 min', d: '<b>Emosson Dam</b> — high-elevation reservoir traverse & mountain vista trails' },
-      { t: '60 min', d: '<b>Derborence</b> — wild landslide valley, high mountain scenery, zero crowds' },
-      { t: 'Door-out', d: '<b>Pointe de l\'Au / Croix de l\'Aiguille</b> — ridge hikes straight from the front door' },
-      { t: 'Big day', d: '<b>Zermatt</b> — drive Täsch 1h45, mountain train up, iconic Matterhorn views' }
+      { t: '45 min', d: '<b>Lac de Salanfe</b> — alpine lake directly under the Dents du Midi; trailhead Van d\'en Haut above Salvan',
+        stats: '<span><b>DIST</b> ~10 km round</span><span><b>ASCENT</b> ~600 m</span><span><b>TIME</b> 4–5 h</span><span><b>GRADE</b> moderate</span><span><b>EXTRA</b> refuge at the lake serves lunch</span>', nav: '46.1500,7.0000' },
+      { t: '40 min', d: '<b>Lac de Taney</b> — short steep approach from Le Flon to a classic Valais lake basin',
+        stats: '<span><b>DIST</b> ~5 km round</span><span><b>ASCENT</b> ~400 m</span><span><b>TIME</b> 2–3 h</span><span><b>GRADE</b> easy–moderate</span><span><b>EXTRA</b> extend to Col de Blantse for the ridge view</span>', nav: '46.3450,6.8360' },
+      { t: '60 min', d: '<b>Emosson Dam</b> — high reservoir traverse; dinosaur trackway on the slabs above the lake',
+        stats: '<span><b>DIST</b> 6–14 km depending on turnaround</span><span><b>ASCENT</b> 250–600 m</span><span><b>TIME</b> 2–5 h</span><span><b>GRADE</b> easy at dam level, steep to the tracks</span>', nav: '46.0770,6.9270' },
+      { t: '60 min', d: '<b>Derborence</b> — landslide-formed valley, ancient forest, near-zero crowds',
+        stats: '<span><b>DIST</b> 4–9 km options</span><span><b>ASCENT</b> 150–500 m</span><span><b>TIME</b> 2–4 h</span><span><b>GRADE</b> easy</span><span><b>EXTRA</b> best rest-day option</span>', nav: '46.2830,7.2140' },
+      { t: 'Door-out', d: '<b>Pointe de l\'Au / Croix de l\'Aiguille</b> — ridge hikes straight from the front door',
+        stats: '<span><b>ASCENT</b> ~500 m from Champoussin</span><span><b>TIME</b> 3–4 h</span><span><b>GRADE</b> moderate</span><span><b>HACK</b> Multi-Pass lifts cut the climb</span>', nav: '46.2000,6.8690' },
+      { t: 'Big day', d: '<b>Zermatt</b> — drive Täsch 1h45, mountain train up, Matterhorn views',
+        stats: '<span><b>NOTE</b> Zermatt is car-free — park at Täsch, train is the only way in</span><span><b>TIME</b> full day, leave by 07:00</span>', nav: '46.0670,7.7780' }
     ],
     actions: [ { ics: 'resort', label: '+ CAL CHECK-IN', alpine: true } ]
   },
@@ -414,16 +462,17 @@ const ITINERARY_DATA = [
     phase: 4, tag: 'SAT AUG 29', tagClass: 'swi-t', title: 'Extraction',
     legs: [
       { t: '08:00', d: 'Roll out of Champoussin' },
-      { t: '10:00', d: 'Europcar drop — Geneva Airport' },
+      { t: '10:00', d: 'Europcar drop — Geneva Airport', nav: '46.2381,6.1080' },
       { t: '12:40', d: '<b>UA 8391</b> GVA ▸ YUL · Air Canada 777 · 8h' },
       { t: '14:40', d: 'Land Montreal — US preclearance · connection 3h05' },
       { t: '17:45', d: '<b>UA 8607</b> YUL ▸ SAN · A220' },
       { t: '20:39', d: 'Touchdown San Diego' }
     ],
-    kvs: [ 
+    kvs: [
       { k: 'Refs Keegan', v: 'UA: <span class="conf">AR526H</span> · AC: <span class="conf">ACS5LZ</span>' },
       { k: 'Refs Will', v: 'UA: <span class="conf">ASGTLJ</span> · AC: <span class="conf">ACS5LZ</span>' }
     ],
+    notes: [ { text: '<b>Montreal:</b> US preclearance happens in YUL, not on landing in San Diego — 3h05 is comfortable but treat it like an international departure, not a domestic connection.' } ],
     links: [
       { url: 'https://www.flightaware.com/live/flight/UAL8391', label: '✈ UA8391 STATUS', alpine: true },
       { url: 'https://www.flightaware.com/live/flight/UAL8607', label: '✈ UA8607 STATUS', alpine: true }
@@ -441,8 +490,8 @@ function renderItinerary() {
     const mapSec = document.getElementById('mapsec');
     if (mapSec) mapSec.parentNode.insertBefore(container, mapSec);
   }
-  if (!container) return; 
-  
+  if (!container) return;
+
   let html = '';
   ITINERARY_DATA.forEach(sec => {
     let body = '';
@@ -452,8 +501,13 @@ function renderItinerary() {
       body += '</dl>';
     }
     if(sec.notes) sec.notes.forEach(n => body += `<p class="note ${n.warn ? 'warn' : ''}">${n.text}</p>`);
-    if(sec.legs) sec.legs.forEach(l => body += `<div class="leg"><span class="t">${l.t}</span><span class="d">${l.d}</span></div>`);
-    
+    if(sec.legs) sec.legs.forEach(l => {
+      let inner = l.d;
+      if(l.stats) inner += `<span class="stats">${l.stats}</span>`;
+      if(l.nav) inner += `<a class="navlink" href="https://www.google.com/maps/dir/?api=1&destination=${l.nav}" target="_blank" rel="noopener">▸ NAV</a>`;
+      body += `<div class="leg"><span class="t">${l.t}</span><span class="d">${inner}</span></div>`;
+    });
+
     if(sec.links || sec.actions || sec.flights) {
       body += `<div class="statusbtns ${sec.links?.some(l=>l.alpine) || sec.actions?.some(a=>a.alpine) ? 'swi-btn' : ''}">`;
       if(sec.links) sec.links.forEach(l => body += `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`);
@@ -461,7 +515,7 @@ function renderItinerary() {
       if(sec.flights) sec.flights.forEach(f => body += `<span class="fstat" data-f="${f.f}" data-d="${f.d}" title="tap to refresh">${f.f} · standby</span>`);
       body += '</div>';
     }
-    
+
     html += `
       <section class="chapter">
         <details class="acc" open data-phase="${sec.phase}">
@@ -477,29 +531,28 @@ function renderItinerary() {
 const HASH='d5d5e69ef6f8f3fbb87ffe5ae5df2af6d079d915bd8f7f10b2414a8f554afac0';
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 
+let BOOTED = false;
 function unlock(){
-  // 1. Reveal App Container
   document.getElementById('gate').style.display='none';
   document.getElementById('app').style.display='block';
   sessionStorage.setItem('travl_ok','1');
+  if (BOOTED) return;
+  BOOTED = true;
 
-  // 2. Build DOM Nodes Sequential First
   try { renderItinerary(); } catch(e) { console.error('Itinerary Error:', e); }
-  
-  // 3. Initialize Map (NOW that container is visible in DOM)
   try { buildMap(); } catch(e) { console.error('Map Error:', e); }
-  
-  // 4. Attach Event Handlers & API Calls
   try { tick(); setInterval(tick,1000); } catch(e) { console.error('Clock Error:', e); }
   try { renderToday(); setInterval(renderToday,60000); } catch(e) { console.error('Today Error:', e); }
-  try { 
+  try {
     wx(38.02,12.54,'Europe/Rome',document.getElementById('wxTP'),document.getElementById('sunTP'));
     wx(46.20,6.87,'Europe/Zurich',document.getElementById('wxCH'),document.getElementById('sunCH'));
     wx(32.72,-117.16,'America/Los_Angeles',document.getElementById('wxSD'),document.getElementById('sunSD'));
   } catch(e) { console.error('WX Error:', e); }
+  try { tripForecast(); } catch(e) { console.error('Forecast Error:', e); }
   try { fx(); } catch(e) { console.error('FX Error:', e); }
   try { lists(); } catch(e) { console.error('Lists Error:', e); }
   try { statusBoot(); } catch(e) { console.error('Status Error:', e); }
+  try { netWatch(); } catch(e) { console.error('Net Error:', e); }
 }
 
 document.getElementById('gateForm').addEventListener('submit',async e=>{
@@ -522,19 +575,19 @@ const TRIP_START=M[0].t, TRIP_END=M[5].t;
 
 /* TODAY AGENDA */
 const AGENDA={
- '2026-08-17':{tz:'America/Los_Angeles',title:'Insertion · SAN',rows:[['17:15','UA 8932 departs SAN — be at airport by 14:15']]},
+ '2026-08-17':{tz:'America/Los_Angeles',title:'Insertion · SAN',rows:[['14:15','Be at SAN — international check-in + bag drop'],['17:15','UA 8932 departs SAN']]},
  '2026-08-18':{tz:'Europe/Rome',title:'Arrival · Sicily',rows:[['13:25','Land Munich (connection 1h55)'],['15:20','LH 1916 departs MUC'],['17:20','Land Palermo'],['18:30','Hertz pickup'],['~19:30','Arrive Trapani base']]},
- '2026-08-19':{tz:'Europe/Rome',title:'Sicily · Day 1',rows:[['—','San Vito Lo Capo: DWS ocean rock climbing & beach chill'],['PM','Town dinner — couscous & fresh seafood']]},
- '2026-08-20':{tz:'Europe/Rome',title:'Sicily · Day 2',rows:[['—','Zingaro Reserve: DWS coves & sea cave swim'],['Sunset','Salt pans watch']]},
- '2026-08-21':{tz:'Europe/Rome',title:'Sicily · Day 3',rows:[['—','Erice cable car & Maria Grammatico pastry run'],['EVE','Pack + Swiss online check-in opens']]},
- '2026-08-22':{tz:'Europe/Zurich',title:'SWAP DAY',rows:[['06:15','Depart base'],['07:30','Hertz return PMO'],['09:45','LX 1741 ▸ ZRH'],['11:45','Land Zurich'],['12:30','Europcar pickup'],['~15:30','Champoussin — reception closes 18:00']]},
- '2026-08-23':{tz:'Europe/Zurich',title:'Valais · Day 1',rows:[['—','Door-out ridge hike: Pointe de l\'Au · grab Multi-Pass']]},
- '2026-08-24':{tz:'Europe/Zurich',title:'Valais · Day 2',rows:[['—','Lac de Salanfe alpine lake trek (45 min drive)']]},
- '2026-08-25':{tz:'Europe/Zurich',title:'Valais · Day 3',rows:[['—','Lac de Taney hike via Le Flon (40 min)']]},
- '2026-08-26':{tz:'Europe/Zurich',title:'Valais · Day 4',rows:[['—','Emosson Dam reservoir hike + mountain vistas (1 hr)']]},
- '2026-08-27':{tz:'Europe/Zurich',title:'Valais · Day 5',rows:[['—','Zermatt & Matterhorn viewing day via Täsch']]},
- '2026-08-28':{tz:'Europe/Zurich',title:'Valais · Day 6',rows:[['—','Derborence landslide valley hike'],['12:40','United return check-in opens'],['EVE','Pack + fuel the Polo']]},
- '2026-08-29':{tz:'Europe/Zurich',title:'EXTRACTION',rows:[['08:00','Roll out of Champoussin'],['10:00','Europcar drop GVA'],['12:40','UA 8391 ▸ YUL'],['17:45','UA 8607 ▸ SAN'],['20:39','Touchdown San Diego']]}
+ '2026-08-19':{tz:'Europe/Rome',title:'Sicily · Day 1',rows:[['AM','San Vito Lo Capo: DWS + beach chill (glassy water early)'],['PM','Town dinner — couscous & fresh seafood']]},
+ '2026-08-20':{tz:'Europe/Rome',title:'Sicily · Day 2',rows:[['AM','Zingaro Reserve: DWS coves & sea cave swim — carry all water in'],['Sunset','Salt pans watch']]},
+ '2026-08-21':{tz:'Europe/Rome',title:'Sicily · Day 3',rows:[['AM','Erice cable car & Maria Grammatico pastry run'],['PM','Swiss online check-in opens — confirm checked bags on both refs'],['EVE','Pack: bags by the door, road by 06:15 tomorrow']]},
+ '2026-08-22':{tz:'Europe/Zurich',title:'SWAP DAY',rows:[['06:15','Depart base'],['07:30','Hertz return PMO'],['09:45','LX 1741 ▸ ZRH'],['11:45','Land Zurich'],['12:30','Europcar pickup — CHF 125.03 due, both licenses out'],['~15:30','Champoussin — reception closes 18:00']]},
+ '2026-08-23':{tz:'Europe/Zurich',title:'Valais · Day 1',rows:[['AM','Buy the Multi-Pass at reception'],['—','Door-out ridge: Pointe de l\'Au · ~500 m ascent, 3–4 h']]},
+ '2026-08-24':{tz:'Europe/Zurich',title:'Valais · Day 2',rows:[['07:30','Drive to Van d\'en Haut (45 min)'],['—','Lac de Salanfe · ~10 km, 600 m, 4–5 h · refuge lunch at the lake']]},
+ '2026-08-25':{tz:'Europe/Zurich',title:'Valais · Day 3',rows:[['—','Lac de Taney via Le Flon (40 min drive) · ~5 km, 400 m, 2–3 h'],['PM','Short day — good for a village evening']]},
+ '2026-08-26':{tz:'Europe/Zurich',title:'Valais · Day 4',rows:[['—','Emosson Dam + dinosaur trackway (1 hr drive) · 2–5 h on foot']]},
+ '2026-08-27':{tz:'Europe/Zurich',title:'Valais · Day 5',rows:[['07:00','Leave early — Zermatt day'],['—','Drive Täsch 1h45, train up (Zermatt is car-free), Matterhorn']]},
+ '2026-08-28':{tz:'Europe/Zurich',title:'Valais · Day 6',rows:[['—','Derborence valley — easy rest-day hike'],['12:40','United return check-in opens'],['EVE','Pack + fuel the Polo']]},
+ '2026-08-29':{tz:'Europe/Zurich',title:'EXTRACTION',rows:[['08:00','Roll out of Champoussin'],['10:00','Europcar drop GVA'],['12:40','UA 8391 ▸ YUL'],['14:40','Montreal — US preclearance here'],['17:45','UA 8607 ▸ SAN'],['20:39','Touchdown San Diego']]}
 };
 
 function renderToday(){
@@ -561,24 +614,23 @@ function tick(){
     if(lbl) lbl.textContent=next.label;
     let s=Math.floor((next.t-now)/1000);
     const d=Math.floor(s/86400);s-=d*86400;const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);s-=m*60;
-    
     const cdD = document.getElementById('cdD'), cdH = document.getElementById('cdH'), cdM = document.getElementById('cdM'), cdS = document.getElementById('cdS');
     if(cdD) cdD.textContent=d;
     if(cdH) cdH.textContent=String(h).padStart(2,'0');
     if(cdM) cdM.textContent=String(m).padStart(2,'0');
     if(cdS) cdS.textContent=String(s).padStart(2,'0');
   }
-  
+
   const p=Math.max(0,Math.min(1,(now-TRIP_START)/(TRIP_END-TRIP_START)));
   const progFill = document.getElementById('progFill');
   if(progFill) progFill.style.width=(p*100)+'%';
-  
+
   let phase=-1;
   if(now>=TRIP_START)phase=M.filter(m=>m.t<=now).slice(-1)[0]?.phase ?? -1;
   document.querySelectorAll('details.acc[data-phase]').forEach(d=>{
     const pill=d.querySelector('.now-pill'); if(pill)pill.hidden=Number(d.dataset.phase)!==phase;
   });
-  
+
   const f=tz=>new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date());
   const clkSD = document.getElementById('clkSD'); if(clkSD) clkSD.textContent=f('America/Los_Angeles');
   const clkTP = document.getElementById('clkTP'); if(clkTP) clkTP.textContent=f('Europe/Rome');
@@ -601,6 +653,32 @@ async function wx(lat,lon,tz,el,sunEl){
     }
   }catch(e){el.textContent='TELEMETRY OFFLINE';}
 }
+
+/* TRIP-WINDOW FORECAST (fills in automatically as dates enter the 16-day window) */
+async function tripForecast(){
+  const el=document.getElementById('fcRows'); if(!el) return;
+  const spots=[
+    {n:'TRAPANI · SICILY',lat:38.02,lon:12.54,tz:'Europe/Rome',from:'2026-08-17',to:'2026-08-22',c:'var(--sicily)'},
+    {n:'CHAMPOUSSIN · VALAIS',lat:46.20,lon:6.87,tz:'Europe/Zurich',from:'2026-08-22',to:'2026-08-29',c:'var(--valais)'}
+  ];
+  let out='';
+  for(const s of spots){
+    try{
+      const u=`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=${encodeURIComponent(s.tz)}&forecast_days=16`;
+      const j=await(await fetch(u)).json();
+      const idx=j.daily.time.map((d,i)=>({d,i})).filter(x=>x.d>=s.from&&x.d<=s.to);
+      if(!idx.length) continue;
+      out+=`<div class="fc-group"><div class="fc-title" style="color:${s.c}">${s.n}</div>`;
+      idx.forEach(x=>{
+        const pop=j.daily.precipitation_probability_max?.[x.i];
+        out+=`<div class="fc-row"><span class="t">${x.d.slice(5).replace('-','/')}</span><span class="d">${WMO[j.daily.weather_code[x.i]]||'—'} · ${Math.round(j.daily.temperature_2m_min[x.i])}–${Math.round(j.daily.temperature_2m_max[x.i])}°C${pop!=null?' · '+pop+'% precip':''}</span></div>`;
+      });
+      out+='</div>';
+    }catch(e){}
+  }
+  el.innerHTML = out || '<div class="fc-note">Trip dates sit outside the 16-day forecast horizon. This panel populates itself automatically — Sicily from about Aug 1, Valais from about Aug 6. No action needed.</div>';
+}
+
 async function fx(){
   const fxRow = document.getElementById('fxRow');
   if(!fxRow) return;
@@ -610,24 +688,26 @@ async function fx(){
   }catch(e){fxRow.textContent='RATES OFFLINE';}
 }
 
-/* MAP RE-INTEGRATION */
+/* MAP */
 let mapObj = null;
 function buildMap(){
   const mapEl = document.getElementById('map');
   if (!mapEl || typeof L === 'undefined' || mapObj) return;
-  
+
   mapObj = L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
-  
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap &copy; CARTO'
   }).addTo(mapObj);
-  
-  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1}).addTo(mapObj).bindPopup(`<b>${title}</b><br>${body}`);
+
+  const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:6,color,weight:2,fillColor:color,fillOpacity:1})
+    .addTo(mapObj)
+    .bindPopup(`<b>${title}</b><br>${body}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}" target="_blank" rel="noopener" style="color:${color};text-decoration:none;font-weight:700">▸ NAVIGATE</a>`);
   const SEA = '#00E5FF';
   const ALP = '#00FF88';
   const AMB = '#FF5E00';
-  
+
   mk(32.7338,-117.1933,AMB,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
   mk(38.1760,13.0910,AMB,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
   mk(38.0175,12.5449,SEA,'Trapani base','Via Spalti 33, 4th fl · Aug 18–22');
@@ -637,14 +717,13 @@ function buildMap(){
   mk(37.9910,12.5030,SEA,'Salt pans','Sunset watch');
   mk(47.4581,8.5555,AMB,'ZRH Zurich','Land Aug 22 11:45 · Europcar 12:30');
   mk(46.2000,6.8690,ALP,'Champoussin base','Route de Champoussin 22 · Aug 22–29');
-  mk(46.1500,7.0000,ALP,'Lac de Salanfe','Alpine lake hike');
-  mk(46.3450,6.8360,ALP,'Lac de Taney','Mountain lake trek via Le Flon');
-  mk(46.0770,6.9270,ALP,'Emosson Dam','High elevation reservoir hike');
-  mk(46.2830,7.2140,ALP,'Derborence','Landslide valley mountain hike');
-  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt (Matterhorn)');
+  mk(46.1500,7.0000,ALP,'Lac de Salanfe','~10 km · 600 m · 4–5 h');
+  mk(46.3450,6.8360,ALP,'Lac de Taney','~5 km · 400 m · 2–3 h');
+  mk(46.0770,6.9270,ALP,'Emosson Dam','2–5 h · dinosaur trackway');
+  mk(46.2830,7.2140,ALP,'Derborence','Easy valley · 2–4 h');
+  mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt (car-free)');
   mk(46.2381,6.1080,AMB,'GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40');
 
-  // Trigger leaflet resize calculation once element is guaranteed visible
   setTimeout(() => { if(mapObj) mapObj.invalidateSize(); }, 200);
 }
 
@@ -672,7 +751,33 @@ function downloadICS(key){
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ics]');if(b)downloadICS(b.dataset.ics);});
 
-/* CHECKLISTS */
+/* TAP-TO-COPY REF CODES */
+document.addEventListener('click', e=>{
+  const c = e.target.closest('.conf');
+  if(!c || c.classList.contains('copied')) return;
+  const txt = c.textContent.trim();
+  const done = ()=>{
+    const old = txt;
+    c.textContent = 'COPIED ✓'; c.classList.add('copied');
+    setTimeout(()=>{ c.textContent = old; c.classList.remove('copied'); }, 1000);
+  };
+  if(navigator.clipboard?.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{}); }
+  else {
+    const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); done(); }catch(err){} document.body.removeChild(ta);
+  }
+});
+
+/* CHECKLISTS + PROGRESS COUNTERS */
+function updateCounts(ul){
+  const head = ul.previousElementSibling;
+  if(!head || !head.classList.contains('subhead')) return;
+  const cnt = head.querySelector('.cnt'); if(!cnt) return;
+  const boxes = ul.querySelectorAll('.box');
+  const done = ul.querySelectorAll('.box[aria-checked="true"]').length;
+  cnt.textContent = `${done}/${boxes.length}`;
+  cnt.classList.toggle('done', done === boxes.length && boxes.length > 0);
+}
 function lists(){
   document.querySelectorAll('ul.check').forEach(ul=>{
     const store=ul.dataset.store;
@@ -684,33 +789,41 @@ function lists(){
         const t=b.nextElementSibling;
         t.innerHTML=on?'<s>'+t.innerHTML+'</s>':t.innerHTML.replace(/^<s>|<\/s>$/g,'');
         localStorage.setItem(store+i,on?'1':'0');
+        updateCounts(ul);
       };
       b.addEventListener('click',toggle);
       b.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle();}});
     });
+    updateCounts(ul);
   });
 }
 
-/* LIVE FLIGHT STATUS */
+/* LIVE FLIGHT STATUS — candidate lists handle codeshare numbers */
 const DEPS={UA8932:'2026-08-18T00:15:00Z',LH1916:'2026-08-18T13:20:00Z',LX1741:'2026-08-22T07:45:00Z',UA8391:'2026-08-29T10:40:00Z',UA8607:'2026-08-29T21:45:00Z'};
+/* Add operating-carrier numbers here as you learn them, e.g. UA8932:['UA8932','LH461'] */
+const ALIASES={UA8932:['UA8932'],LH1916:['LH1916'],LX1741:['LX1741'],UA8391:['UA8391','AC879'],UA8607:['UA8607']};
 async function loadStatus(el,force){
   const f=el.dataset.f,d=el.dataset.d,dep=Date.parse(DEPS[f]);
   const inWindow=Date.now()>dep-48*3600e3&&Date.now()<dep+24*3600e3;
   if(!inWindow&&!force){el.textContent=f+' · status opens T-48h';return;}
   el.textContent=f+' · PINGING...';
   try{
-    const r=await fetch(`/api/flights?flight=${f}&date=${d}`);
-    if(r.status===501){el.textContent=f+' · OFFLINE';return;}
+    const q=(ALIASES[f]||[f]).join(',');
+    const r=await fetch(`/api/flights?flight=${encodeURIComponent(q)}&date=${d}`);
+    if(r.status===501){el.textContent=f+' · OFFLINE (NO KEY)';el.className='fstat dead';return;}
+    if(r.status===404){el.textContent=f+' · NOT TRACKED (CODESHARE)';el.className='fstat dead';return;}
+    if(r.status===429){el.textContent=f+' · QUOTA LIMIT';el.className='fstat warn';return;}
     if(!r.ok)throw 0;
     const j=await r.json();
     const st=(j.status||'scheduled').toUpperCase();
     const gate=j.dep.gate?' · G '+j.dep.gate:'';
     const term=j.dep.terminal?' · T'+j.dep.terminal:'';
+    const belt=j.arr?.belt?' · BELT '+j.arr.belt:'';
     const rev=j.dep.rev&&j.dep.rev!==j.dep.sched?' · NEW '+j.dep.rev.slice(11,16):'';
-    el.textContent=`${f} · ${st}${term}${gate}${rev}`;
-    el.classList.remove('ok','warn');
+    el.textContent=`${j.resolved||f} · ${st}${term}${gate}${rev}${belt}`;
+    el.className='fstat';
     el.classList.add(/DELAY|CANCEL|DIVERT/i.test(st)||rev?'warn':'ok');
-  }catch(e){el.textContent=f+' · NO SIGNAL';}
+  }catch(e){el.textContent=f+' · NO SIGNAL';el.className='fstat dead';}
 }
 function statusBoot(){
   document.querySelectorAll('.fstat').forEach(el=>{
@@ -720,10 +833,29 @@ function statusBoot(){
   setInterval(()=>document.querySelectorAll('.fstat').forEach(el=>loadStatus(el,false)),10*60*1000);
 }
 
-// Auto boot if already unlocked via sessionStorage
-if(sessionStorage.getItem('travl_ok')==='1') {
-  unlock();
+/* NETWORK STATE */
+function netWatch(){
+  const badge=document.getElementById('offlineBadge');
+  const paint=()=>{ if(badge) badge.classList.toggle('on', !navigator.onLine); };
+  window.addEventListener('online',paint); window.addEventListener('offline',paint); paint();
 }
+
+/* INSTALL PROMPT */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  const b=document.getElementById('installBtn'); if(b) b.hidden=false;
+});
+document.addEventListener('click',async e=>{
+  if(!e.target.closest('#installBtn')) return;
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt(); await deferredPrompt.userChoice;
+  deferredPrompt=null; const b=document.getElementById('installBtn'); if(b) b.hidden=true;
+});
+window.addEventListener('appinstalled',()=>{const b=document.getElementById('installBtn'); if(b) b.hidden=true;});
+
+// Auto boot if already unlocked via sessionStorage
+if(sessionStorage.getItem('travl_ok')==='1') { unlock(); }
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
