@@ -392,7 +392,18 @@ const ITINERARY_DATA = [
 ];
 
 function renderItinerary() {
-  const container = document.getElementById('itinerary-container');
+  let container = document.getElementById('itinerary-container');
+  
+  // Failsafe: If the container is missing from the HTML, generate it dynamically.
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'itinerary-container';
+    const mapSec = document.getElementById('mapsec');
+    if (mapSec) mapSec.parentNode.insertBefore(container, mapSec);
+  }
+  
+  if (!container) return; // Ultimate failsafe
+  
   let html = '';
   ITINERARY_DATA.forEach(sec => {
     let body = '';
@@ -467,63 +478,87 @@ function renderToday(){
   if(now>=M[1].t&&now<M[2].t)tz='Europe/Rome'; else if(now>=M[2].t)tz='Europe/Zurich';
   const key=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const a=AGENDA[key]; const card=document.getElementById('todayCard');
-  if(!a){card.hidden=true;return;}
+  if(!a || !card){ if(card) card.hidden=true; return; }
   card.hidden=false;
-  document.getElementById('todayTitle').textContent=a.title;
-  document.getElementById('todayRows').innerHTML=a.rows.map(r=>`<div class="row"><span class="t">${r[0]}</span><span class="d">${r[1]}</span></div>`).join('');
+  const title = document.getElementById('todayTitle'); if(title) title.textContent=a.title;
+  const rows = document.getElementById('todayRows'); if(rows) rows.innerHTML=a.rows.map(r=>`<div class="row"><span class="t">${r[0]}</span><span class="d">${r[1]}</span></div>`).join('');
 }
 
 function tick(){
   const now=Date.now();
   const next=M.find(m=>m.t>now);
   const lbl=document.getElementById('cdLabel'), cd=document.getElementById('cd');
-  if(!next){lbl.style.display='none';cd.style.display='none';document.getElementById('cdDone').style.display='block';}
-  else{lbl.textContent=next.label;
+  if(!next){
+    if(lbl) lbl.style.display='none';
+    if(cd) cd.style.display='none';
+    const done = document.getElementById('cdDone');
+    if(done) done.style.display='block';
+  } else {
+    if(lbl) lbl.textContent=next.label;
     let s=Math.floor((next.t-now)/1000);
     const d=Math.floor(s/86400);s-=d*86400;const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);s-=m*60;
-    cdD.textContent=d;cdH.textContent=String(h).padStart(2,'0');cdM.textContent=String(m).padStart(2,'0');cdS.textContent=String(s).padStart(2,'0');
+    
+    const cdD = document.getElementById('cdD'), cdH = document.getElementById('cdH'), cdM = document.getElementById('cdM'), cdS = document.getElementById('cdS');
+    if(cdD) cdD.textContent=d;
+    if(cdH) cdH.textContent=String(h).padStart(2,'0');
+    if(cdM) cdM.textContent=String(m).padStart(2,'0');
+    if(cdS) cdS.textContent=String(s).padStart(2,'0');
   }
+  
   const p=Math.max(0,Math.min(1,(now-TRIP_START)/(TRIP_END-TRIP_START)));
-  document.getElementById('progFill').style.width=(p*100)+'%';
+  const progFill = document.getElementById('progFill');
+  if(progFill) progFill.style.width=(p*100)+'%';
+  
   let phase=-1;
   if(now>=TRIP_START)phase=M.filter(m=>m.t<=now).slice(-1)[0]?.phase ?? -1;
   document.querySelectorAll('details.acc[data-phase]').forEach(d=>{
     const pill=d.querySelector('.now-pill'); if(pill)pill.hidden=Number(d.dataset.phase)!==phase;
   });
+  
   const f=tz=>new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',timeZone:tz}).format(new Date());
-  document.getElementById('clkSD').textContent=f('America/Los_Angeles');
-  document.getElementById('clkTP').textContent=f('Europe/Rome');
-  document.getElementById('clkCH').textContent=f('Europe/Zurich');
+  const clkSD = document.getElementById('clkSD'); if(clkSD) clkSD.textContent=f('America/Los_Angeles');
+  const clkTP = document.getElementById('clkTP'); if(clkTP) clkTP.textContent=f('Europe/Rome');
+  const clkCH = document.getElementById('clkCH'); if(clkCH) clkCH.textContent=f('Europe/Zurich');
 }
 
 /* WEATHER + SUN */
 const WMO={0:'☀ clear',1:'🌤 fair',2:'⛅ pt cloudy',3:'☁ overcast',45:'🌫 fog',48:'🌫 fog',51:'🌦 drizzle',53:'🌦 drizzle',55:'🌧 drizzle',61:'🌧 rain',63:'🌧 rain',65:'🌧 hvy rain',71:'🌨 snow',73:'🌨 snow',75:'❄ hvy snow',80:'🌦 showers',81:'🌧 showers',82:'⛈ hvy shwrs',95:'⛈ t-storm',96:'⛈ hail',99:'⛈ hail'};
 async function wx(lat,lon,tz,el,sunEl){
+  if(!el) return;
   try{
     const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=${encodeURIComponent(tz)}&forecast_days=1`;
     const r=await fetch(u);const j=await r.json();
     const c=Math.round(j.current.temperature_2m),code=j.current.weather_code;
     const hi=Math.round(j.daily.temperature_2m_max[0]),lo=Math.round(j.daily.temperature_2m_min[0]);
     el.innerHTML=`${WMO[code]||'—'} <span class="hi">${c}°C</span> · ${lo}–${hi}°`;
-    const sr=j.daily.sunrise[0].slice(11,16),ss=j.daily.sunset[0].slice(11,16);
-    sunEl.textContent=`☉ ${sr} — ${ss}`;
+    if(sunEl) {
+      const sr=j.daily.sunrise[0].slice(11,16),ss=j.daily.sunset[0].slice(11,16);
+      sunEl.textContent=`☉ ${sr} — ${ss}`;
+    }
   }catch(e){el.textContent='wx offline';}
 }
 async function fx(){
+  const fxRow = document.getElementById('fxRow');
+  if(!fxRow) return;
   try{
     const r=await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,CHF');const j=await r.json();
-    document.getElementById('fxRow').textContent=`$1 = €${j.rates.EUR.toFixed(2)} · CHF ${j.rates.CHF.toFixed(2)}`;
-  }catch(e){document.getElementById('fxRow').textContent='rates offline';}
+    fxRow.textContent=`$1 = €${j.rates.EUR.toFixed(2)} · CHF ${j.rates.CHF.toFixed(2)}`;
+  }catch(e){fxRow.textContent='rates offline';}
 }
 
 /* MAP RE-INTEGRATION (Light Theme CartoDB Tiles) */
 function buildMap(){
+  const mapEl = document.getElementById('map');
+  if (!mapEl || typeof L === 'undefined') return;
   const map=L.map('map',{scrollWheelZoom:false}).setView([43.5,9.5],5);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap, &copy; CartoDB'}).addTo(map);
+  // Removed the rogue '{r}' retina tag that causes 404s on CartoDB servers
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap, &copy; CartoDB'}).addTo(map);
+  
   const mk=(lat,lon,color,title,body)=>L.circleMarker([lat,lon],{radius:7,color,weight:2,fillColor:color,fillOpacity:1}).addTo(map).bindPopup(`<b>${title}</b><br>${body}`);
-  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sea').trim();
-  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--alp').trim();
-  const AMB=getComputedStyle(document.documentElement).getPropertyValue('--amber').trim();
+  const SEA=getComputedStyle(document.documentElement).getPropertyValue('--sea').trim() || '#0E7C86';
+  const ALP=getComputedStyle(document.documentElement).getPropertyValue('--alp').trim() || '#3E5C76';
+  const AMB=getComputedStyle(document.documentElement).getPropertyValue('--amber').trim() || '#DF9A2E';
+  
   mk(32.7338,-117.1933,AMB,'SAN','Depart Aug 17 17:15 · Land Aug 29 20:39');
   mk(38.1760,13.0910,AMB,'PMO Palermo','Land Aug 18 17:20 · Hertz 18:30 · Return Aug 22 07:30');
   mk(38.0175,12.5449,SEA,'Trapani base','Via Spalti 33, 4th fl · Aug 18–22');
@@ -616,16 +651,20 @@ function statusBoot(){
 let booted=false;
 function boot(){
   if(booted)return;booted=true;
-  renderItinerary();
-  tick();setInterval(tick,1000);
-  renderToday();setInterval(renderToday,60000);
-  wx(38.02,12.54,'Europe/Rome',document.getElementById('wxTP'),document.getElementById('sunTP'));
-  wx(46.20,6.87,'Europe/Zurich',document.getElementById('wxCH'),document.getElementById('sunCH'));
-  wx(32.72,-117.16,'America/Los_Angeles',document.getElementById('wxSD'),document.getElementById('sunSD'));
-  fx();
-  buildMap();
-  lists();
-  statusBoot();
+  
+  // Wrapped in Failsafes: If one component errors out, the rest of the dashboard stays online.
+  try { renderItinerary(); } catch(e) { console.error('Itinerary Error:', e); }
+  try { tick(); setInterval(tick,1000); } catch(e) { console.error('Clock Error:', e); }
+  try { renderToday(); setInterval(renderToday,60000); } catch(e) { console.error('Today Error:', e); }
+  try { 
+    wx(38.02,12.54,'Europe/Rome',document.getElementById('wxTP'),document.getElementById('sunTP'));
+    wx(46.20,6.87,'Europe/Zurich',document.getElementById('wxCH'),document.getElementById('sunCH'));
+    wx(32.72,-117.16,'America/Los_Angeles',document.getElementById('wxSD'),document.getElementById('sunSD'));
+  } catch(e) { console.error('WX Error:', e); }
+  try { fx(); } catch(e) { console.error('FX Error:', e); }
+  try { buildMap(); } catch(e) { console.error('Map Error:', e); }
+  try { lists(); } catch(e) { console.error('Lists Error:', e); }
+  try { statusBoot(); } catch(e) { console.error('Status Error:', e); }
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
