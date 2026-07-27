@@ -476,21 +476,37 @@ function renderItinerary() {
 /* GATE */
 const HASH='d5d5e69ef6f8f3fbb87ffe5ae5df2af6d079d915bd8f7f10b2414a8f554afac0';
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+
 function unlock(){
+  // 1. Reveal App Container
   document.getElementById('gate').style.display='none';
   document.getElementById('app').style.display='block';
-  boot();
-  if (mapObj) {
-    setTimeout(() => { mapObj.invalidateSize(); }, 250);
-  }
+  sessionStorage.setItem('travl_ok','1');
+
+  // 2. Build DOM Nodes Sequential First
+  try { renderItinerary(); } catch(e) { console.error('Itinerary Error:', e); }
+  
+  // 3. Initialize Map (NOW that container is visible in DOM)
+  try { buildMap(); } catch(e) { console.error('Map Error:', e); }
+  
+  // 4. Attach Event Handlers & API Calls
+  try { tick(); setInterval(tick,1000); } catch(e) { console.error('Clock Error:', e); }
+  try { renderToday(); setInterval(renderToday,60000); } catch(e) { console.error('Today Error:', e); }
+  try { 
+    wx(38.02,12.54,'Europe/Rome',document.getElementById('wxTP'),document.getElementById('sunTP'));
+    wx(46.20,6.87,'Europe/Zurich',document.getElementById('wxCH'),document.getElementById('sunCH'));
+    wx(32.72,-117.16,'America/Los_Angeles',document.getElementById('wxSD'),document.getElementById('sunSD'));
+  } catch(e) { console.error('WX Error:', e); }
+  try { fx(); } catch(e) { console.error('FX Error:', e); }
+  try { lists(); } catch(e) { console.error('Lists Error:', e); }
+  try { statusBoot(); } catch(e) { console.error('Status Error:', e); }
 }
-if(sessionStorage.getItem('travl_ok')==='1') unlock();
 
 document.getElementById('gateForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const v=document.getElementById('pw').value.trim().toLowerCase();
-  if(await sha(v)===HASH){sessionStorage.setItem('travl_ok','1');unlock();}
-  else{document.getElementById('gateErr').textContent='ACCESS DENIED. VERIFY CLEARANCE.';document.getElementById('pw').select();}
+  if(await sha(v)===HASH){ unlock(); }
+  else{ document.getElementById('gateErr').textContent='ACCESS DENIED. VERIFY CLEARANCE.'; document.getElementById('pw').select(); }
 });
 
 /* MILESTONES */
@@ -594,7 +610,7 @@ async function fx(){
   }catch(e){fxRow.textContent='RATES OFFLINE';}
 }
 
-/* MAP RE-INTEGRATION (CARTO DARK MATTER) */
+/* MAP RE-INTEGRATION */
 let mapObj = null;
 function buildMap(){
   const mapEl = document.getElementById('map');
@@ -627,6 +643,9 @@ function buildMap(){
   mk(46.2830,7.2140,ALP,'Derborence','Landslide valley mountain hike');
   mk(46.0670,7.7780,ALP,'Täsch','Park + train to Zermatt (Matterhorn)');
   mk(46.2381,6.1080,AMB,'GVA Geneva','Car drop Aug 29 10:00 · UA8391 12:40');
+
+  // Trigger leaflet resize calculation once element is guaranteed visible
+  setTimeout(() => { if(mapObj) mapObj.invalidateSize(); }, 200);
 }
 
 /* ICS */
@@ -701,28 +720,11 @@ function statusBoot(){
   setInterval(()=>document.querySelectorAll('.fstat').forEach(el=>loadStatus(el,false)),10*60*1000);
 }
 
-let booted=false;
-function boot(){
-  if(booted)return;booted=true;
-  
-  try { renderItinerary(); } catch(e) { console.error('Itinerary Error:', e); }
-  try { tick(); setInterval(tick,1000); } catch(e) { console.error('Clock Error:', e); }
-  try { renderToday(); setInterval(renderToday,60000); } catch(e) { console.error('Today Error:', e); }
-  try { 
-    wx(38.02,12.54,'Europe/Rome',document.getElementById('wxTP'),document.getElementById('sunTP'));
-    wx(46.20,6.87,'Europe/Zurich',document.getElementById('wxCH'),document.getElementById('sunCH'));
-    wx(32.72,-117.16,'America/Los_Angeles',document.getElementById('wxSD'),document.getElementById('sunSD'));
-  } catch(e) { console.error('WX Error:', e); }
-  try { fx(); } catch(e) { console.error('FX Error:', e); }
-  try { buildMap(); } catch(e) { console.error('Map Error:', e); }
-  try { lists(); } catch(e) { console.error('Lists Error:', e); }
-  try { statusBoot(); } catch(e) { console.error('Status Error:', e); }
-}
-
-// Auto boot if already unlocked
+// Auto boot if already unlocked via sessionStorage
 if(sessionStorage.getItem('travl_ok')==='1') {
   unlock();
 }
+
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
 </body>
